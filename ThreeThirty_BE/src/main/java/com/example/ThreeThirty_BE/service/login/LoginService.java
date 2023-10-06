@@ -14,6 +14,7 @@ import com.example.ThreeThirty_BE.exception.ErrorCode;
 import com.example.ThreeThirty_BE.mapper.UserRepository;
 import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
 import com.example.ThreeThirty_BE.service.user.UserService;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,14 +32,20 @@ public class LoginService {
 
   @Transactional
   public UserSignupResponseDto saveUser(UserSignupDto userSignupDto) {
-      if (userRepository.findByEmail(userSignupDto.getEmail()) != null) {
+      if (userRepository.findByEmail(userSignupDto.getUser_email()) != null) {
           throw new CustomException(ErrorCode.EMAIL_DUPLICATE);
       }
 
+    LocalDate localDate = LocalDate.now();
+
     User user = User.builder()
-        .email(userSignupDto.getEmail())
-        .username(userSignupDto.getUsername())
-        .password(passwordEncoder.encode(userSignupDto.getPassword()))
+        .user_email(userSignupDto.getUser_email())
+        .user_name(userSignupDto.getUser_name())
+        .pw(passwordEncoder.encode(userSignupDto.getPw()))
+        .phone_number(userSignupDto.getPhone_number())
+        .signup_date(localDate)
+        .image_url(userSignupDto.getImage_url())
+        .notification_status(userSignupDto.isNotification_status())
         .providerType(ProviderType.LOCAL)
         .roleType(RoleType.USER)
         .build();
@@ -47,35 +54,36 @@ public class LoginService {
 
     return UserSignupResponseDto
         .builder()
-        .userId(user.getUserId())
-        .email(user.getEmail())
-        .username(user.getUsername())
+        .user_id(user.getUser_id())
+        .user_email(user.getUser_email())
+        .user_name(user.getUser_name())
+        .signup_date(user.getSignup_date())
         .build();
   }
 
   public UserLoginResponseDto login(UserLoginDto userLoginDto) {
-    User user = userService.findByEmail(userLoginDto.getEmail());
+    User user = userService.findByEmail(userLoginDto.getUser_email());
       if (user == null) {
           throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
       }
 
-      if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+      if (!passwordEncoder.matches(userLoginDto.getPw(), user.getPw())) {
           throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
       }
 
-    String accessToken = jwtTokenizer.createAccessToken(user.getUserId(), user.getEmail(),
-        user.getUsername(), RoleType.USER.getCode());
-    String refreshToken = jwtTokenizer.createRefreshToken(user.getUserId(), user.getEmail(),
-        user.getUsername(), RoleType.USER.getCode());
+    String accessToken = jwtTokenizer.createAccessToken(user.getUser_id(), user.getUser_email(),
+        user.getUser_name(), RoleType.USER.getCode());
+    String refreshToken = jwtTokenizer.createRefreshToken(user.getUser_id(), user.getUser_email(),
+        user.getUser_name(), RoleType.USER.getCode());
 
-    RefreshToken rToken = new RefreshToken(user.getUserId(), refreshToken);
+    RefreshToken rToken = new RefreshToken(user.getUser_id(), refreshToken);
     refreshTokenService.saveRefreshToken(rToken);
 
     return UserLoginResponseDto.builder()
         .accessToken(accessToken)
         .refreshToken(refreshToken)
-        .userId(user.getUserId())
-        .name(user.getUsername())
+        .userId(user.getUser_id())
+        .name(user.getUser_name())
         .build();
   }
 

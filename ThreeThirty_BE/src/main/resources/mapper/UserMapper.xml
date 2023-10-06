@@ -3,32 +3,32 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ThreeThirty_BE.mapper.UserRepository">
 
-  <insert id="saveUser" useGeneratedKeys="true" keyProperty="userId">
-    insert into USER(email, password, username, provider_type, role_type)
-    values (#{email}, #{password}, #{username}, #{providerType}, #{roleType})
+  <insert id="saveUser" useGeneratedKeys="true" keyProperty="user_id">
+    insert into TB_USER(user_email, user_name, pw, phone_number, signup_date, image_url, notification_status, provider_type, role_type)
+    values (#{user_email}, #{user_name}, #{pw}, #{phone_number}, #{signup_date}, #{image_url}, #{notification_status}, #{providerType}, #{roleType})
   </insert>
 
   <select id="findByEmail" resultType="com.example.ThreeThirty_BE.domain.User">
-    select user_id, email, password, username, provider_type, role_type
-    from USER
-    where email = #{email}
+    select user_id, user_email, pw, user_name, provider_type, role_type
+    from TB_USER
+    where user_email = #{user_email}
   </select>
 
   <select id="findById" resultType="com.example.ThreeThirty_BE.domain.User">
     select user_id, email, password, username, provider_type, role_type
-    from USER
-    where user_id = #{userId}
+    from TB_USER
+    where user_id = #{user_id}
   </select>
 
   <update id="updateUser">
-    update USER
+    update TB_USER
     set username = #{username}
-    where user_id = #{userId}
+    where user_id = #{user_id}
   </update>
 
   <update id="updateUserPassword">
-    update USER
-    set password = #{password}
-    where user_id = #{userId}
+    update TB_USER
+    set password = #{pw}
+    where user_id = #{user_id}
   </update>
 </mapper>
