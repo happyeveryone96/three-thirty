@@ -307,8 +307,9 @@ const RegisterProfileInfo = ({navigation}: any) => {
         onPress={() => {
           Alert.alert('회원가입 완료');
           navigation.navigate('Login');
-        }}>
-        <View style={styles.complete}>
+        }}
+        style={styles.complete}>
+        <View>
           <Text>Complete</Text>
         </View>
       </TouchableOpacity>
