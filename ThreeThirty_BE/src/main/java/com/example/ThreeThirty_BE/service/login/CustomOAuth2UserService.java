@@ -9,6 +9,7 @@ import com.example.ThreeThirty_BE.security.auth.exception.OAuthProviderMissMatch
 import com.example.ThreeThirty_BE.security.auth.userInfo.OAuth2UserInfo;
 import com.example.ThreeThirty_BE.security.auth.userInfo.OAuth2UserInfoFactory;
 import com.example.ThreeThirty_BE.security.auth.userInfo.UserPrincipal;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -67,36 +68,38 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
       user = updateMember(user, userInfo);
     } else { // 가입되어있지 않은 회원이면 가입
 
-          user = createUser(userInfo, providerType);
+        user = createUser(userInfo, providerType);
     }
 
     // OAuth2User 상속받은 MemberPrincipal 객체에 담아서 반환
     return new UserPrincipal(
-        user.getUserId(),
-        user.getEmail(),
-        user.getUsername(),
+        user.getUser_id(),
+        user.getUser_email(),
+        user.getUser_name(),
         user.getProviderType(),
         Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode()))
     );
   }
 
   // 받은 데이터로 DB 저장
+  LocalDate localDate = LocalDate.now();
   private User createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
     User user = User.builder()
-        .email(userInfo.getEmail())
-        .username(userInfo.getName())
-        .password(passwordEncoder.encode(providerType.name() + userInfo.getEmail()))
+        .user_email(userInfo.getEmail())
+        .user_name(userInfo.getName())
+        .pw(passwordEncoder.encode(providerType.name() + userInfo.getEmail()))
+        .signup_date(localDate)
         .providerType(providerType)
         .roleType(RoleType.USER)
         .build();
     userRepository.saveUser(user);
-    return userRepository.findByEmail(user.getEmail());
+    return userRepository.findByEmail(user.getUser_email());
   }
 
   private User updateMember(User user, OAuth2UserInfo userInfo) {
-    if (userInfo.getName() != null && !user.getUsername().equals(userInfo.getName())) {
-      userRepository.updateUser(user.getUserId(), userInfo.getName());
-      user = userRepository.findByEmail(user.getEmail());
+    if (userInfo.getName() != null && !user.getUser_name().equals(userInfo.getName())) {
+      userRepository.updateUser(user.getUser_id(), userInfo.getName());
+      user = userRepository.findByEmail(user.getUser_email());
     }
     return user;
   }
