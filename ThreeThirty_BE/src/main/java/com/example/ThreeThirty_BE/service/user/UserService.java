@@ -40,10 +40,10 @@ public class UserService {
 //        String EncodePassword = passwordEncoder.encode(userUpdateDto.getPassword());
 //        userRepository.updateUserPassword(userId, EncodePassword);
 
-    User findUser = this.findById(userId);
+    User findTBUSER = this.findById(userId);
     return UserUpdateResponseDto
         .builder()
-        .username(findUser.getUsername())
+        .username(findTBUSER.getUser_name())
         .build();
   }
 
@@ -55,12 +55,12 @@ public class UserService {
 
   @Transactional
   public UserSignupResponseDto currentUser(Long userId) {
-    User findUser = this.findById(userId);
+    User findTBUSER = this.findById(userId);
     return UserSignupResponseDto
         .builder()
-        .userId(findUser.getUserId())
-        .email(findUser.getEmail())
-        .username(findUser.getUsername())
+        .user_id(findTBUSER.getUser_id())
+        .user_email(findTBUSER.getUser_email())
+        .user_name(findTBUSER.getUser_email())
         .build();
   }
 
@@ -68,9 +68,9 @@ public class UserService {
   public UserLoginResponseDto reissuingToken(String authorizationHeader) {
 
     Long id = jwtTokenizer.getUserIdFromToken(authorizationHeader);
-    User user = userRepository.findById(id);
+    User TBUSER = userRepository.findById(id);
 
-    String accessToken = jwtTokenizer.createAccessToken(user.getUserId(), user.getEmail(), user.getUsername(),
+    String accessToken = jwtTokenizer.createAccessToken(TBUSER.getUser_id(), TBUSER.getUser_email(), TBUSER.getUser_name(),
         RoleType.USER.getCode());
 
     String token = authorizationHeader.replace("Bearer ", "");
@@ -78,8 +78,8 @@ public class UserService {
     return UserLoginResponseDto.builder()
         .accessToken(accessToken)
         .refreshToken(token)
-        .userId(user.getUserId())
-        .name(user.getUsername())
+        .userId(TBUSER.getUser_id())
+        .name(TBUSER.getUser_name())
         .build();
   }
 }
