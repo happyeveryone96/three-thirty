@@ -1,88 +1,42 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useState} from 'react';
+import RegisterScreen from './RegisterScreen';
+import {useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabNavigation from './TabNavigation';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [user, setUser] = useState(undefined);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const getData = async (key: string) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return JSON.parse(value);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error('데이터 검색 실패', e);
+    }
   };
 
-  return <TabNavigation />;
-}
+  useEffect(() => {
+    getData('user').then(savedUser => {
+      if (savedUser !== null) {
+        setUser(savedUser);
+      } else {
+        console.log('사용자 토큰을 찾을 수 없음');
+      }
+    });
+  }, []);
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+  const isLoggedIn = user === 'guest';
+
+  return isLoggedIn ? (
+    <TabNavigation setUser={setUser} />
+  ) : (
+    <RegisterScreen setUser={setUser} />
+  );
+}
 
 export default App;
