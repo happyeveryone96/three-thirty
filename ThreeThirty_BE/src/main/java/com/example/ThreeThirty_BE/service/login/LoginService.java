@@ -63,6 +63,7 @@ public class LoginService {
 
   public UserLoginResponseDto login(UserLoginDto userLoginDto) {
     User user = userService.findByEmail(userLoginDto.getUser_email());
+
       if (user == null) {
           throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
       }
@@ -82,8 +83,8 @@ public class LoginService {
     return UserLoginResponseDto.builder()
         .accessToken(accessToken)
         .refreshToken(refreshToken)
-        .userId(user.getUser_id())
-        .name(user.getUser_name())
+        .user_id(user.getUser_id())
+        .user_name(user.getUser_name())
         .build();
   }
 

@@ -3,19 +3,29 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ThreeThirty_BE.mapper.UserRepository">
 
+  <resultMap id="userResultMap" type="com.example.ThreeThirty_BE.domain.User">
+    <id property="user_id" column="user_id" />
+    <result property="user_email" column="user_email" />
+    <result property="user_name" column="user_name" />
+    <result property="pw" column="pw" />
+    <result property="phone_number" column="phone_number" />
+    <result property="providerType" column="provider_type" />
+    <result property="roleType" column="role_type" />
+  </resultMap>
+
   <insert id="saveUser" useGeneratedKeys="true" keyProperty="user_id">
     insert into TB_USER(user_email, user_name, pw, phone_number, signup_date, image_url, notification_status, provider_type, role_type)
     values (#{user_email}, #{user_name}, #{pw}, #{phone_number}, #{signup_date}, #{image_url}, #{notification_status}, #{providerType}, #{roleType})
   </insert>
 
-  <select id="findByEmail" resultType="com.example.ThreeThirty_BE.domain.User">
-    select user_id, user_email, pw, user_name, provider_type, role_type
+  <select id="findByEmail" resultMap="userResultMap"  >
+    select *
     from TB_USER
     where user_email = #{user_email}
   </select>
 
   <select id="findById" resultType="com.example.ThreeThirty_BE.domain.User">
-    select user_id, email, password, username, provider_type, role_type
+    select user_id, email, password, username, provider_type, roleType
     from TB_USER
     where user_id = #{user_id}
   </select>

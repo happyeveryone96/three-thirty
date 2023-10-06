@@ -14,6 +14,6 @@ public class UserLoginResponseDto {
   private String accessToken;
   private String refreshToken;
 
-  private Long userId;
-  private String name;
+  private Long user_id;
+  private String user_name;
 }
