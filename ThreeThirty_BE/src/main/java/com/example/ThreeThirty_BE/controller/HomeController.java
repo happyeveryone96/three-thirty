@@ -22,6 +22,13 @@ public class HomeController {
 
   @GetMapping("/test2")
   public String userCheck() {
-    return "User Check ok";
+    return "<h1> User Check ok </h1>";
   }
+
+  @GetMapping(value="/main")
+  public String mainPage() {
+    return "This is our main page";
+  }
+
+
 }
