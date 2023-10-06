@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
 import {
   TouchableWithoutFeedback,
   StyleSheet,
@@ -9,21 +11,23 @@ import {
   TextInput,
   SafeAreaView,
   Dimensions,
-  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {createNativeStackNavigator} from 'react-native-screens/native-stack';
 
-const Stack = createNativeStackNavigator();
 const screenWidth = Dimensions.get('window').width;
 
 const Tab = createBottomTabNavigator();
 
-function Avatar() {
+function Avatar({setUser}: any) {
+  const logOut = () => {
+    setUser(undefined);
+  };
   return (
     <View style={styles.avatarContainer}>
       <View style={styles.avatarBox}>
-        <Icon name="person" size={30} color="gray" />
+        <TouchableWithoutFeedback onPress={logOut}>
+          <Icon name="person" size={30} color="gray" />
+        </TouchableWithoutFeedback>
       </View>
     </View>
   );
@@ -124,10 +128,10 @@ const styles = StyleSheet.create({
   },
 });
 
-function Header({setPage}) {
+function Header({setPage, setUser}: any) {
   return (
     <View>
-      <Avatar />
+      <Avatar setUser={setUser} />
       <View style={styles.header}>
         <View style={styles.box}>
           <TouchableWithoutFeedback onPress={() => setPage('main')}>
@@ -218,7 +222,7 @@ function NotificationHeader() {
   );
 }
 
-function TabNavigation() {
+function TabNavigation({setUser}: any) {
   const [page, setPage] = useState('main');
 
   return (
@@ -230,14 +234,17 @@ function TabNavigation() {
             (page === 'main' && HomeScreen) ||
             (page === 'threeThirty' && ThreeThirtyScreen) ||
             (page === 'funny' && FunnyScreen) ||
-            (page === 'following' && FollowingScreen)
+            (page === 'following' && FollowingScreen) ||
+            HomeScreen
           }
           options={{
             title: '홈',
             tabBarIcon: ({color, size}) => (
               <Icon name="home" color={color} size={size} />
             ),
-            headerTitle: () => <Header setPage={setPage} />,
+            headerTitle: () => {
+              return <Header setPage={setPage} setUser={setUser} />;
+            },
           }}
         />
         <Tab.Screen
