@@ -3,6 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ThreeThirty_BE.mapper.UserRepository">
 
+<!-- resultType은 SQL 쿼리의 결과를 매핑할 Java 객체의 타입을 지정하는 것인데, resultType으로 매핑이 제대로 이루어지지 않아 resultMap을 사용하여 수동 매핑 -->
   <resultMap id="userResultMap" type="com.example.ThreeThirty_BE.domain.User">
     <id property="user_id" column="user_id" />
     <result property="user_email" column="user_email" />
