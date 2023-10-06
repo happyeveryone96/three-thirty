@@ -24,8 +24,16 @@ public class UserService {
   private final JwtTokenizer jwtTokenizer;
 
   @Transactional
-  public User findByEmail(String email) {
-    return userRepository.findByEmail(email);
+  public User findByEmail(String user_email) {
+    User user = userRepository.findByEmail(user_email);
+    System.out.println(user.getUser_id());
+    System.out.println(user.getUser_email());
+    System.out.println(user.getUser_name());
+    System.out.println(user.getProviderType());
+    System.out.println(user.getRoleType());
+    System.out.println(user.getPw());
+    System.out.println(user.getPhone_number());
+    return userRepository.findByEmail(user_email);
   }
 
   @Transactional
@@ -68,9 +76,9 @@ public class UserService {
   public UserLoginResponseDto reissuingToken(String authorizationHeader) {
 
     Long id = jwtTokenizer.getUserIdFromToken(authorizationHeader);
-    User TBUSER = userRepository.findById(id);
+    User user = userRepository.findById(id);
 
-    String accessToken = jwtTokenizer.createAccessToken(TBUSER.getUser_id(), TBUSER.getUser_email(), TBUSER.getUser_name(),
+    String accessToken = jwtTokenizer.createAccessToken(user.getUser_id(), user.getUser_email(), user.getUser_name(),
         RoleType.USER.getCode());
 
     String token = authorizationHeader.replace("Bearer ", "");
@@ -78,8 +86,8 @@ public class UserService {
     return UserLoginResponseDto.builder()
         .accessToken(accessToken)
         .refreshToken(token)
-        .userId(TBUSER.getUser_id())
-        .name(TBUSER.getUser_name())
+        .user_id(user.getUser_id())
+        .user_name(user.getUser_name())
         .build();
   }
 }
