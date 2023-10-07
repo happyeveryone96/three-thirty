@@ -5,6 +5,7 @@ import com.example.ThreeThirty_BE.domain.ProviderType;
 import com.example.ThreeThirty_BE.domain.RefreshToken;
 import com.example.ThreeThirty_BE.domain.RoleType;
 import com.example.ThreeThirty_BE.domain.User;
+import com.example.ThreeThirty_BE.dto.login.UserAddDataDto;
 import com.example.ThreeThirty_BE.dto.login.UserLoginDto;
 import com.example.ThreeThirty_BE.dto.login.UserLoginResponseDto;
 import com.example.ThreeThirty_BE.dto.login.UserSignupDto;
@@ -89,4 +90,14 @@ public class LoginService {
   }
 
 
+  public void addData(String authorizationHeader, UserAddDataDto userAddDataDto) {
+    // 헤더 accessToken으로 사용자Id 가져옴
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
+
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+
+    userRepository.addUserInfo(userId, userAddDataDto.getPhone_number(), userAddDataDto.getImage_url());
+  }
 }
