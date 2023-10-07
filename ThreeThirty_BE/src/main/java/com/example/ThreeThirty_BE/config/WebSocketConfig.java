@@ -20,15 +20,15 @@ HashCode 메서드, 생성자등을 자동으로 생성해준다.
 RequiredArgsConsturctor의 경우, 해당 클래스의 생성자를 자동으로 생성하여, final로 선언된
 필드를 생성자의 매개변수에 포함한다.
  */
-@Configuration
-@EnableWebSocket
-@RequiredArgsConstructor
-public class WebSocketConfig implements WebSocketConfigurer {
-    private final WebSocketHandler webSocketHandler;
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry){
-        // ws/chat 경로를 통해 들어오는 소켓 통신 요청에 대한 처리를 위한 Handler 추가
-        // handler란 관련 프로토콜 요청 처리를 담당하는 녀석을 말한다.
-        registry.addHandler( webSocketHandler, "ws/chat").setAllowedOrigins("*");
-    }
-}
+//@Configuration
+//@EnableWebSocket
+//@RequiredArgsConstructor
+//public class WebSocketConfig implements WebSocketConfigurer {
+//    private final WebSocketHandler webSocketHandler;
+//    @Override
+//    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry){
+//        // ws/chat 경로를 통해 들어오는 소켓 통신 요청에 대한 처리를 위한 Handler 추가
+//        // handler란 관련 프로토콜 요청 처리를 담당하는 녀석을 말한다.
+//        registry.addHandler( webSocketHandler, "ws/chat").setAllowedOrigins("*");
+//    }
+//}
