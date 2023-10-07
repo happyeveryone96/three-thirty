@@ -1,3 +1,18 @@
 spring:
   config:
     import: setting.yml
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ehdgus5289@gmail.com
+    password: ocgagvixgtkmujjw
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
