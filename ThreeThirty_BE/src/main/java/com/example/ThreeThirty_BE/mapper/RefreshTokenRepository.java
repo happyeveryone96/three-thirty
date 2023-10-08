@@ -9,9 +9,9 @@ public interface RefreshTokenRepository {
 
   void saveRefreshToken(RefreshToken refreshToken);
 
-  RefreshToken findRefreshToken(Long refreshToken);
+  RefreshToken findRefreshToken(Long userId);
 
-  void updateRefreshToken(@Param("userId") Long userId, @Param("value") String value);
+  void updateRefreshToken(@Param("user_id") Long userId, @Param("token_value") String value);
 
   void deleteRefreshToken(String refreshToken);
 }
