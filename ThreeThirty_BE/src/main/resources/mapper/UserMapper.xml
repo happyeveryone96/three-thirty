@@ -26,20 +26,27 @@
   </select>
 
   <select id="findById" resultType="com.example.ThreeThirty_BE.domain.User">
-    select user_id, email, password, username, provider_type, roleType
+    select user_id, user_email, pw, username, provider_type, roleType
     from TB_USER
     where user_id = #{user_id}
   </select>
 
   <update id="updateUser">
     update TB_USER
-    set username = #{username}
+    set user_name = #{user_name}
     where user_id = #{user_id}
   </update>
 
   <update id="updateUserPassword">
     update TB_USER
-    set password = #{pw}
+    set pw = #{pw}
     where user_id = #{user_id}
   </update>
+
+  <update id="addUserInfo">
+    update TB_USER
+    set phone_number = #{phone_number}, image_url = #{image_url}
+    where user_id = #{user_id}
+  </update>
+
 </mapper>
