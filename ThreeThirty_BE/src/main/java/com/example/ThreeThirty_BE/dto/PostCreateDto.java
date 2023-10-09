@@ -1,6 +1,5 @@
 package com.example.ThreeThirty_BE.dto;
 
-import com.nimbusds.openid.connect.sdk.assurance.evidences.attachment.Attachment;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto {
+public class PostCreateDto {
 
     private String post_type_title;
     private String company_title;

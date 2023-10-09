@@ -3,6 +3,25 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ThreeThirty_BE.mapper.PostRepository">
 
+  <resultMap id="postResultMap" type="com.example.ThreeThirty_BE.dto.PostResponseDto$Posts">
+    <id property="post_id" column="post_id"/>
+    <result property="post_writer" column="post_writer"/>
+    <result property="post_content" column="post_content"/>
+    <result property="update_date" column="update_date"/>
+    <result property="like_count" column="like_count"/>
+    <result property="hate_count" column="hate_count"/>
+    <result property="comment_count" column="comment_count"/>
+    <result property="company_title" column="company_title"/>
+
+    <collection property="hashtag_content" ofType="java.lang.String">
+      <result column="hashtag_content"/>
+    </collection>
+
+    <collection property="attach_file_url" ofType="java.lang.String">
+      <result column="attach_file_url"/>
+    </collection>
+  </resultMap>
+
   <select id = "findPostType">
     select post_type
     from TB_POST_TYPE
@@ -35,5 +54,28 @@
       (#{postHashing.post_id}, #{postHashing.hashtag_content})
     </foreach>
   </insert>
+
+  <select id="findPost" resultMap="postResultMap">
+    SELECT p.post_id,
+    p.post_writer,
+    p.post_content,
+    p.update_date,
+    p.like_count,
+    p.hate_count,
+    p.comment_count,
+    c.company_title,
+    (
+    SELECT GROUP_CONCAT(hashtag_content)
+    FROM TB_POST_HASHTAG
+    WHERE post_id = p.post_id
+    ) AS hashtag_content,
+    (
+    SELECT GROUP_CONCAT(attach_file_url)
+    FROM TB_POST_ATTACH
+    WHERE post_id = p.post_id
+    ) AS attach_file_url
+    FROM TB_POST p
+    LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code;
+  </select>
 
 </mapper>

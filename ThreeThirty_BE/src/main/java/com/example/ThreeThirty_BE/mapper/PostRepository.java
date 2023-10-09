@@ -3,6 +3,8 @@ package com.example.ThreeThirty_BE.mapper;
 import com.example.ThreeThirty_BE.domain.Post;
 import com.example.ThreeThirty_BE.domain.PostAttach;
 import com.example.ThreeThirty_BE.domain.PostHashing;
+import com.example.ThreeThirty_BE.dto.PostResponseDto;
+import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -22,4 +24,6 @@ public interface PostRepository {
   void saveAttachment(List<PostAttach> attachments);
 
   void saveHashing(List<PostHashing> postHashings);
+
+  List<Posts> findPost();
 }
