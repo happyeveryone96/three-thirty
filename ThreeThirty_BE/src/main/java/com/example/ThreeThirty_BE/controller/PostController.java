@@ -43,9 +43,9 @@ public class PostController {
 //    return new ResponseEntity<>(getPostResponseDto, HttpStatus.FOUND);
 //  }
 //
-//  @DeleteMapping("/{postId}")
-//  public ResponseEntity<String> deletePost(@PathVariable Long postId) {
-//    postService.deletePost(postId);
-//    return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다.");
-//  }
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long postId) {
+    postService.deletePost(authorizationHeader, postId);
+    return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다.");
+  }
 }

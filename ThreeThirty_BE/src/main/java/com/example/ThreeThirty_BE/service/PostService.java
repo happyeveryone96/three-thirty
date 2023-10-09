@@ -101,6 +101,15 @@ public class PostService {
 
   }
 
+  public void deletePost(String authorizationHeader, Long postId) {
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
+
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+    postRepository.deletePost(postId);
+  }
+
 //      // PostDto에서 필요한 정보를 추출하여 Post 객체로 변환
 //    Post post = Post.builder()
 //          .content(postDto.getContent())
@@ -136,8 +145,5 @@ public class PostService {
 //
 //    postRepository.updatePost(post);
 //  }
-//
-//  public void deletePost(Long postId) {
-//    postRepository.deletePost(postId);
-//  }
+
 }

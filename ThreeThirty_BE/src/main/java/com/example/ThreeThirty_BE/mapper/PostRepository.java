@@ -11,19 +11,19 @@ import java.util.List;
 
 @Mapper
 public interface PostRepository {
-  void createPost(Post post);
-  List<Post> getPost(Long postId);
+  void savePost(Post post);
+  List<Posts> findPost();
   void updatePost(Post post);
   void deletePost(Long postId);
 
   String findPostType(String post_type_title);
   String findCompanyCode(String company_title);
 
-  void savePost(Post post);
+
 
   void saveAttachment(List<PostAttach> attachments);
 
   void saveHashing(List<PostHashing> postHashings);
 
-  List<Posts> findPost();
+
 }

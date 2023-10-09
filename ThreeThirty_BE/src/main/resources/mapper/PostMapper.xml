@@ -75,7 +75,13 @@
     WHERE post_id = p.post_id
     ) AS attach_file_url
     FROM TB_POST p
-    LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code;
+    LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code
+    WHERE p.delete_status = 0
   </select>
 
+  <update id="deletePost">
+    UPDATE TB_POST
+    SET delete_status = 1, delete_date = CURRENT_TIMESTAMP
+    where post_id = #{post_id}
+  </update>
 </mapper>
