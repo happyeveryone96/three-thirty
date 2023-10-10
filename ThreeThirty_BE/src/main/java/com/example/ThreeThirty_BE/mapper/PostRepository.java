@@ -12,7 +12,7 @@ import java.util.List;
 public interface PostRepository {
   // TB_POST
   void savePost(Post post);
-  List<Posts> findPost();
+  List<Posts> findPost(Long user_id);
 
   void deletePost(Long postId);
 

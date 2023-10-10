@@ -27,8 +27,8 @@ public class PostController {
   }
   // 전체 게시물 조회
   @GetMapping
-  public PostResponseDto getPost(@RequestHeader("Authorization") String authorizationHeader){
-    PostResponseDto PostResponseDto = postService.getPost(authorizationHeader);
+  public List<Posts> getPost(@RequestHeader("Authorization") String authorizationHeader){
+    List<Posts> PostResponseDto = postService.getPost(authorizationHeader);
     return PostResponseDto;
   }
 

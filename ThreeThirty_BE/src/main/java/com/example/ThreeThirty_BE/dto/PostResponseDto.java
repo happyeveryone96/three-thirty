@@ -13,9 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponseDto {
-  private Long current_user_id;
-  private List<Long> like_post_id;
-  private List<Long> hate_post_id;
   List<Posts> posts;
 
   @Getter
@@ -25,7 +22,8 @@ public class PostResponseDto {
   public static class Posts {
 
     private Long post_id;
-    private String post_writer;
+    private String nick_name;
+    private String image_url;
     private String post_content;
     private LocalDateTime update_date;
     private int like_count;
@@ -34,5 +32,7 @@ public class PostResponseDto {
     private String company_title;
     private List<String> hashtag_content;
     private List<String> attach_file_url;
+    private int like_status;
+    private int hate_status;
   }
 }

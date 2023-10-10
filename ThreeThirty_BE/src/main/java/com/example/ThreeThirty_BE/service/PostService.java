@@ -83,25 +83,16 @@ public class PostService {
   }
 
   // 전체 게시물 조회
-  public PostResponseDto getPost(String authorizationHeader) {
+  public List<Posts> getPost(String authorizationHeader) {
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
 
     if (userId == null) {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
 
-    List<Posts> postResponseDto = postRepository.findPost();
-    List<Long> like_posts = likeRepository.findLikePost(userId);
-    List<Long> hate_posts = likeRepository.findHatePost(userId);
+    List<Posts> postResponseDto = postRepository.findPost(userId);
 
-    PostResponseDto responseDto = PostResponseDto.builder()
-        .current_user_id(userId)
-        .like_post_id(like_posts)
-        .hate_post_id(hate_posts)
-        .posts(postResponseDto)
-        .build();
-
-    return responseDto;
+    return postResponseDto;
 
   }
 
