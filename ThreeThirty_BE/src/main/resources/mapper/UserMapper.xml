@@ -18,7 +18,7 @@
     insert into TB_USER(user_email, user_name, pw, phone_number, signup_date, image_url, notification_status, provider_type, role_type, nick_name)
     values (#{user_email}, #{user_name}, #{pw}, #{phone_number}, #{signup_date}, #{image_url}, #{notification_status}, #{providerType}, #{roleType}, #{nick_name})
   </insert>
-
+  <!-- resultType은 SQL 쿼리의 결과를 매핑할 Java 객체의 타입을 지정하는 것인데, resultType으로 매핑이 제대로 이루어지지 않아 resultMap을 사용하여 수동 매핑 -->
   <select id="findByEmail" resultMap="userResultMap"  >
     select *
     from TB_USER
