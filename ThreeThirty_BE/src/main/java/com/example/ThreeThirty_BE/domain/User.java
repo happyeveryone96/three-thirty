@@ -33,13 +33,5 @@ public class User {
 
   private RoleType roleType;
 
-//  public String all_show(){
-//   return String.format("%d %s %s %s %s %s %s %s %s %s ",
-//       this.user_id, this.user_email, this.user_name, this.pw, this.phone_number,
-//       this.signup_date, this.image_url, this.notification_status, this.providerType, this.roleType
-//   );
-
-//  }
-
 
 }
