@@ -25,8 +25,8 @@
     where user_email = #{user_email}
   </select>
 
-  <select id="findById" resultType="com.example.ThreeThirty_BE.domain.User">
-    select user_id, user_email, pw, username, provider_type, roleType
+  <select id="findById" resultMap="userResultMap" >
+    select user_id, user_email, pw, user_name, provider_type, role_Type
     from TB_USER
     where user_id = #{user_id}
   </select>
