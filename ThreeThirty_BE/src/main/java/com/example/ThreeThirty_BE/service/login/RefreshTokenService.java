@@ -22,6 +22,7 @@ public class RefreshTokenService {
   }
 
   public void deleteRefreshToken(String token) {
+    System.out.println(token);
     refreshTokenRepository.deleteRefreshToken(token);
   }
 }

@@ -11,4 +11,5 @@ public class UserSignupDto {
   private String phone_number;
   private String image_url;
   private boolean notification_status;
+  private String nick_name;
 }

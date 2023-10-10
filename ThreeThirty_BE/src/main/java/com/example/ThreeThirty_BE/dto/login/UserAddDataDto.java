@@ -6,4 +6,5 @@ import lombok.Getter;
 public class UserAddDataDto {
   private String phone_number;
   private String image_url;
+  private String nick_name;
 }
