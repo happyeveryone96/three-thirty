@@ -1,8 +1,7 @@
 package com.example.ThreeThirty_BE.controller;
 
-import com.example.ThreeThirty_BE.domain.Post;
 import com.example.ThreeThirty_BE.dto.PostCreateDto;
-import com.example.ThreeThirty_BE.dto.PostResponseDto;
+import com.example.ThreeThirty_BE.dto.PostPatchDto;
 import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
 import com.example.ThreeThirty_BE.service.PostService;
 import java.util.List;
@@ -32,17 +31,19 @@ public class PostController {
     return PostResponseDto;
   }
 
-  @PutMapping
-  public ResponseEntity<String> updatePost(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PostCreateDto postCreateDto) {
-    postService.updatePost(authorizationHeader, postCreateDto);
+  // 게시물 수정
+  @PatchMapping("/{postId}")
+  public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long postId, @RequestBody PostPatchDto postPatchDto) {
+    postService.updatePost(authorizationHeader, postId, postPatchDto);
     return ResponseEntity.ok("게시물이 성공적으로 수정되었습니다.");
   }
-//  @GetMapping("/{postId}")
-//  public ResponseEntity<GetPostResponseDto> getPost(@PathVariable Long postId) {
-//    GetPostResponseDto getPostResponseDto = postService.getPost(postId);
-//    return new ResponseEntity<>(getPostResponseDto, HttpStatus.FOUND);
-//  }
-//
+  // 게시물 데이터 반환
+  @GetMapping("/{postId}")
+  public List<Posts> getPostForEditing(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long postId) {
+    List<Posts> PostResponseDto = postService.getPostForEditing(authorizationHeader, postId);
+    return PostResponseDto;
+  }
+  // 게시물 삭제
   @DeleteMapping("/{postId}")
   public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long postId) {
     postService.deletePost(authorizationHeader, postId);

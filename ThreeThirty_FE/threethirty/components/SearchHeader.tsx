@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {Icon} from 'react-native-vector-icons/Icon';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -35,17 +35,17 @@ const styles = StyleSheet.create({
 });
 
 const SearchHeader = () => {
-  const [text, onChangeText] = React.useState('');
+  const [text, setText] = React.useState('');
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          onChangeText={onChangeText}
+          onChangeText={setText}
           value={text}
           placeholder="검색하기"
           onSubmitEditing={() => {
-            onChangeText('');
+            setText('');
           }}
           returnKeyType="search"
         />
