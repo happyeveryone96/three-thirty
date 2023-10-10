@@ -1,5 +1,6 @@
 package com.example.ThreeThirty_BE.controller;
 
+import com.example.ThreeThirty_BE.dto.login.UserAddDataDto;
 import com.example.ThreeThirty_BE.dto.login.UserLoginDto;
 import com.example.ThreeThirty_BE.dto.login.UserLoginResponseDto;
 import com.example.ThreeThirty_BE.dto.login.UserSignupDto;
@@ -28,6 +29,13 @@ public class LoginController {
     return new ResponseEntity<>(userSignupResponseDto, HttpStatus.CREATED);
   }
 
+  // 소셜 로그인 이용자 : 신규 가입 시 전화번호, 프로필이미지 추가 정보
+  @PostMapping("/add-data")
+  public ResponseEntity addData(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserAddDataDto userAddDataDto){
+    loginService.addData(authorizationHeader, userAddDataDto);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
   // 로그인
   @PostMapping("/login")
   public UserLoginResponseDto login(@RequestBody UserLoginDto userLoginDto) {
@@ -37,8 +45,8 @@ public class LoginController {
   // 로그아웃
   @PostMapping("/logout")
   public ResponseEntity logout(@RequestHeader("Authorization") String authorizationHeader) {
-    String token = authorizationHeader.replace("Bearer ", "");
-    refreshTokenService.deleteRefreshToken(token);
+    refreshTokenService.deleteRefreshToken(authorizationHeader);
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
 }

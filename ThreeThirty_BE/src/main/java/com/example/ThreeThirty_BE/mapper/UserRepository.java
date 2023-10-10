@@ -16,4 +16,6 @@ public interface UserRepository {
   void updateUser(@Param("user_id") Long user_id, @Param("user_name") String user_name);
 
   void updateUserPassword(@Param("user_id") Long user_id, @Param("pw") String pw);
+
+  void addUserInfo(Long user_id, String phone_number, String image_url);
 }

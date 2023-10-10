@@ -1,0 +1,29 @@
+package com.example.ThreeThirty_BE.mapper;
+
+import com.example.ThreeThirty_BE.domain.Post;
+import com.example.ThreeThirty_BE.domain.PostAttach;
+import com.example.ThreeThirty_BE.domain.PostHashing;
+import com.example.ThreeThirty_BE.dto.PostResponseDto;
+import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface PostRepository {
+  void savePost(Post post);
+  List<Posts> findPost();
+  void updatePost(Post post);
+  void deletePost(Long postId);
+
+  String findPostType(String post_type_title);
+  String findCompanyCode(String company_title);
+
+
+
+  void saveAttachment(List<PostAttach> attachments);
+
+  void saveHashing(List<PostHashing> postHashings);
+
+
+}
