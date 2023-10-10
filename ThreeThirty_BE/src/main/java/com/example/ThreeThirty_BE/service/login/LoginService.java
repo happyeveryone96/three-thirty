@@ -49,6 +49,7 @@ public class LoginService {
         .notification_status(userSignupDto.isNotification_status())
         .providerType(ProviderType.LOCAL)
         .roleType(RoleType.USER)
+        .nick_name(userSignupDto.getNick_name())
         .build();
 
     userRepository.saveUser(user);
@@ -59,6 +60,7 @@ public class LoginService {
         .user_email(user.getUser_email())
         .user_name(user.getUser_name())
         .signup_date(user.getSignup_date())
+        .nick_name(user.getNick_name())
         .build();
   }
 
@@ -98,6 +100,6 @@ public class LoginService {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
 
-    userRepository.addUserInfo(userId, userAddDataDto.getPhone_number(), userAddDataDto.getImage_url());
+    userRepository.addUserInfo(userId, userAddDataDto.getPhone_number(), userAddDataDto.getImage_url(), userAddDataDto.getNick_name());
   }
 }

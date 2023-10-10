@@ -15,8 +15,8 @@
   </resultMap>
 
   <insert id="saveUser" useGeneratedKeys="true" keyProperty="user_id">
-    insert into TB_USER(user_email, user_name, pw, phone_number, signup_date, image_url, notification_status, provider_type, role_type)
-    values (#{user_email}, #{user_name}, #{pw}, #{phone_number}, #{signup_date}, #{image_url}, #{notification_status}, #{providerType}, #{roleType})
+    insert into TB_USER(user_email, user_name, pw, phone_number, signup_date, image_url, notification_status, provider_type, role_type, nick_name)
+    values (#{user_email}, #{user_name}, #{pw}, #{phone_number}, #{signup_date}, #{image_url}, #{notification_status}, #{providerType}, #{roleType}, #{nick_name})
   </insert>
 
   <select id="findByEmail" resultMap="userResultMap"  >
@@ -45,7 +45,7 @@
 
   <update id="addUserInfo">
     update TB_USER
-    set phone_number = #{phone_number}, image_url = #{image_url}
+    set phone_number = #{phone_number}, image_url = #{image_url}, nick_name = #{nick_name}
     where user_id = #{user_id}
   </update>
 

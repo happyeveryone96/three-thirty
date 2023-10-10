@@ -21,6 +21,6 @@
   <delete id="deleteRefreshToken">
     delete
     from TB_REFRESH_TOKEN
-    where token_value = #{token_value}
+    where token_value = #{refreshToken}
   </delete>
 </mapper>
