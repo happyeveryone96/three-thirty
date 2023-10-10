@@ -15,4 +15,5 @@ public class UserSignupResponseDto {
   private String user_email;
   private String user_name;
   private LocalDate signup_date;
+  private String nick_name;
 }

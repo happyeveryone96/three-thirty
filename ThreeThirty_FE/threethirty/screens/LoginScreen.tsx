@@ -1,6 +1,5 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {
-  Alert,
   Dimensions,
   Image,
   StyleSheet,
@@ -54,7 +53,6 @@ const LoginScreen = ({setUser}: LoginScreenProps) => {
 
   const storeData = () => {
     setUser('guest');
-    Alert.alert('로그인 완료');
   };
 
   return (

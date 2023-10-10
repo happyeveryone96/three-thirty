@@ -33,5 +33,7 @@ public class User {
 
   private RoleType roleType;
 
+  private String nick_name;
+
 
 }

@@ -85,4 +85,37 @@
     SET delete_status = 1, delete_date = CURRENT_TIMESTAMP
     where post_id = #{post_id}
   </update>
+
+  <select id="findByPostId" resultMap="postResultMap">
+    SELECT p.post_id,
+    p.post_writer,
+    p.post_content,
+    p.update_date,
+    p.like_count,
+    p.hate_count,
+    p.comment_count,
+    c.company_title,
+    (
+    SELECT GROUP_CONCAT(hashtag_content)
+    FROM TB_POST_HASHTAG
+    WHERE post_id = p.post_id
+    ) AS hashtag_content,
+    (
+    SELECT GROUP_CONCAT(attach_file_url)
+    FROM TB_POST_ATTACH
+    WHERE post_id = p.post_id
+    ) AS attach_file_url
+    FROM TB_POST p
+    LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code
+    WHERE p.delete_status = 0 and p.post_id = #{post_id}
+  </select>
+
+  <select id = "checkWriter">
+    SELECT COUNT(*) > 0
+    FROM TB_POST
+    WHERE post_writer = #{user_id} and post_id = #{postId}
+  </select>
+
+
+
 </mapper>

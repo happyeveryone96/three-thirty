@@ -45,7 +45,8 @@ public class LoginController {
   // 로그아웃
   @PostMapping("/logout")
   public ResponseEntity logout(@RequestHeader("Authorization") String authorizationHeader) {
-    refreshTokenService.deleteRefreshToken(authorizationHeader);
+    String token = authorizationHeader.replace("Bearer ", "");
+    refreshTokenService.deleteRefreshToken(token);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
