@@ -5,12 +5,14 @@ import com.example.ThreeThirty_BE.domain.PostAttach;
 import com.example.ThreeThirty_BE.domain.PostHashing;
 import com.example.ThreeThirty_BE.dto.PostCreateDto;
 import com.example.ThreeThirty_BE.dto.PostCreateDto.Attachment;
-import com.example.ThreeThirty_BE.dto.PostResponseDto;
 import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
+import com.example.ThreeThirty_BE.dto.PostPatchDto;
 import com.example.ThreeThirty_BE.exception.CustomException;
 import com.example.ThreeThirty_BE.exception.ErrorCode;
 import com.example.ThreeThirty_BE.mapper.PostRepository;
+import com.example.ThreeThirty_BE.mapper.UpdatePostRepository;
 import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final JwtTokenizer jwtTokenizer;
+  private final UpdatePostRepository updatePostRepository;
 
   // 게시물 작성
   public void createPost(String authorizationHeader, PostCreateDto postCreateDto) {
@@ -76,18 +79,6 @@ public class PostService {
 
   }
 
-  // 게시물 수정
-  public void updatePost(String authorizationHeader, PostCreateDto postCreateDto) {
-    //작성자 확인
-    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
-
-    if (userId == null) {
-      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
-    }
-
-
-  }
-
   // 전체 게시물 조회
   public List<Posts> getPost(String authorizationHeader) {
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
@@ -95,12 +86,51 @@ public class PostService {
     if (userId == null) {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
-    List<Posts> postResponseDtod = postRepository.findPost();
+    List<Posts> postResponseDto = postRepository.findPost();
 
-    return postResponseDtod;
+    return postResponseDto;
 
   }
 
+  // 게시물 수정
+  public void updatePost(String authorizationHeader, Long postId, PostPatchDto postPatchDto) {
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
+
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+
+    if(postRepository.checkWriter(userId, postId)){
+      String company_title = postPatchDto.getCompany_title();
+      String post_content = postPatchDto.getPost_content();
+      List<String> hashtag_content = postPatchDto.getHashtag_content();
+      List<PostPatchDto.Attachment> attach_file = postPatchDto.getAttach_file();
+      LocalDateTime localDateTime = LocalDateTime.now();
+
+      //POST_LOG
+      if(company_title != null || post_content != null){
+        updatePostRepository.saveLog(postId, localDateTime);
+      }
+      if(company_title != null){
+        updatePostRepository.updateCompanyCode(postId, company_title, localDateTime);
+      }
+      if(post_content != null){
+        updatePostRepository.updatePostContent(postId, post_content, localDateTime);
+      }
+      //POST_HASHING
+      if(hashtag_content != null){
+        updatePostRepository.updateHashing(postId, hashtag_content);
+      }
+
+      //POST_ATTACH
+    }else{
+      // 작성자가 아닌 사용자가 게시물을 수정하는 경우..
+    }
+
+
+  }
+
+  // 게시물 삭제
   public void deletePost(String authorizationHeader, Long postId) {
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
 
@@ -110,17 +140,19 @@ public class PostService {
     postRepository.deletePost(postId);
   }
 
-//      // PostDto에서 필요한 정보를 추출하여 Post 객체로 변환
-//    Post post = Post.builder()
-//          .content(postDto.getContent())
-//          .createDate(localDateTime)
-//          .writer(authorizationHeader)
-//          .category(postDto.getCategory())
-//          .build();
-//
-//      postRepository.createPost(post);
-//    }
+  // 게시물 데이터 반환
+  public List<Posts> getPostForEditing(String authorizationHeader, Long postId) {
+    //작성자 확인
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
 
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+    List<Posts> postResponseDto = postRepository.findByPostId(postId);
+
+    return postResponseDto;
+
+  }
 
 //  public GetPostResponseDto getPost(Long postId) {
 //    List<Post> postList = postRepository.getPost(postId);
@@ -136,14 +168,6 @@ public class PostService {
 //        .build();
 //  }
 //
-//  public void updatePost(PostDto postDto) {
-//    // PostDto에서 필요한 정보를 추출하여 Post 객체로 변환
-//    Post post = Post.builder()
-//        .content(postDto.getContent())
-//        .category(postDto.getCategory())
-//        .build();
-//
-//    postRepository.updatePost(post);
-//  }
+
 
 }
