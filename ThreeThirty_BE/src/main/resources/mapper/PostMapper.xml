@@ -14,6 +14,7 @@
     <result property="company_title" column="company_title"/>
 
     <collection property="hashtag_content" ofType="java.lang.String">
+
       <result column="hashtag_content"/>
     </collection>
 
