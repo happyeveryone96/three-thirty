@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Image, StyleSheet, Dimensions} from 'react-native';
-import {Icon, ImageSource} from 'react-native-vector-icons/Icon';
+import {ImageSource} from 'react-native-vector-icons/Icon';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const screenWidth = Dimensions.get('window').width;
 
