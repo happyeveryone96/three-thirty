@@ -15,12 +15,21 @@ import ThreeThirtyScreen from '../screens/ThreeThirtyScreen';
 import FunnyScreen from '../screens/FunnyScreen';
 import FollowingScreen from '../screens/FollowingScreen';
 import {SetStateAction, Dispatch} from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
+import DetailScreen from '../screens/DetailScreen';
 
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 interface TabNavigationProps {
   setUser: Dispatch<SetStateAction<any>>;
 }
+
+const NoTabNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Detail" component={DetailScreen} />
+  </Stack.Navigator>
+);
 
 function TabNavigation({setUser}: TabNavigationProps) {
   const [screen, setScreen] = useState('main');
@@ -28,6 +37,14 @@ function TabNavigation({setUser}: TabNavigationProps) {
   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName="Home">
+        <Tab.Screen
+          name="Detail"
+          component={NoTabNavigator}
+          options={{
+            tabBarButton: () => null,
+            headerShown: false,
+          }}
+        />
         <Tab.Screen
           name="Home"
           component={

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import {Icon} from 'react-native-vector-icons/Icon';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 });
 
 const CommunityHeader = () => {
-  const [text, onChangeText] = React.useState('');
+  const [text, setText] = React.useState('');
   const [isSearch, setIsSearch] = React.useState(false);
 
   return (
@@ -58,7 +58,7 @@ const CommunityHeader = () => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              onChangeText={onChangeText}
+              onChangeText={setText}
               value={text}
               placeholder="검색하기"
             />
