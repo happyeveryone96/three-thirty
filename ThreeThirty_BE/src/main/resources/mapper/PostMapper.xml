@@ -116,6 +116,4 @@
     WHERE post_writer = #{user_id} and post_id = #{postId}
   </select>
 
-
-
 </mapper>

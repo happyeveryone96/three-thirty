@@ -31,4 +31,6 @@ public interface PostRepository {
   List<Posts> findByPostId(Long postId);
 
   boolean checkWriter(Long user_id, Long postId);
+
+
 }

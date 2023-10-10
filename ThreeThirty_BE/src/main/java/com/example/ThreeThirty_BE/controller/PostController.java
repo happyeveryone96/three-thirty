@@ -2,6 +2,7 @@ package com.example.ThreeThirty_BE.controller;
 
 import com.example.ThreeThirty_BE.dto.PostCreateDto;
 import com.example.ThreeThirty_BE.dto.PostPatchDto;
+import com.example.ThreeThirty_BE.dto.PostResponseDto;
 import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
 import com.example.ThreeThirty_BE.service.PostService;
 import java.util.List;
@@ -26,8 +27,8 @@ public class PostController {
   }
   // 전체 게시물 조회
   @GetMapping
-  public List<Posts> getPost(@RequestHeader("Authorization") String authorizationHeader){
-    List<Posts> PostResponseDto = postService.getPost(authorizationHeader);
+  public PostResponseDto getPost(@RequestHeader("Authorization") String authorizationHeader){
+    PostResponseDto PostResponseDto = postService.getPost(authorizationHeader);
     return PostResponseDto;
   }
 
@@ -48,5 +49,19 @@ public class PostController {
   public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long postId) {
     postService.deletePost(authorizationHeader, postId);
     return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다.");
+  }
+
+  //좋아요 클릭 시 로직
+  @GetMapping("/like/{postId}")
+  public ResponseEntity<String> clickLike(@RequestHeader("Authorization") String authorizationHeader,  @PathVariable Long postId){
+    String checkLike = postService.clickLike(authorizationHeader, postId);
+    return ResponseEntity.ok(checkLike);
+  }
+
+  //싫어요 클릭 시 로직
+  @GetMapping("/hate/{postId}")
+  public ResponseEntity<String> clickHate(@RequestHeader("Authorization") String authorizationHeader,  @PathVariable Long postId){
+    String checkHate= postService.clickHate(authorizationHeader, postId);
+    return ResponseEntity.ok(checkHate);
   }
 }

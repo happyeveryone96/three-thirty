@@ -13,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponseDto {
+  private Long current_user_id;
+  private List<Long> like_post_id;
+  private List<Long> hate_post_id;
   List<Posts> posts;
 
   @Getter
