@@ -98,7 +98,7 @@ const HomePost = (props: HomePostProps) => {
         Authorization: `Bearer ${accessToken}`,
       },
     }).then(response => {
-      const status = JSON.stringify(response?.status);
+      // const status = JSON.stringify(response?.status);
       setIsBtnClicked(true);
       setIsBtnClicked(false);
       // if (status === '401') {
@@ -119,7 +119,7 @@ const HomePost = (props: HomePostProps) => {
         Authorization: `Bearer ${accessToken}`,
       },
     }).then(response => {
-      const status = JSON.stringify(response?.status);
+      // const status = JSON.stringify(response?.status);
       setIsBtnClicked(true);
       setIsBtnClicked(false);
       // if (status === '401') {
