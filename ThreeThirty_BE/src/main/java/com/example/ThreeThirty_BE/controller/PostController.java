@@ -20,7 +20,7 @@ public class PostController {
   // 게시물 작성
   @PostMapping("/create")
   public ResponseEntity<String> createPost(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PostCreateDto postCreateDto) {
-    postService.createPost(authorizationHeader, postCreateDto);
+      postService.createPost(authorizationHeader, postCreateDto);
 
     return ResponseEntity.status(HttpStatus.CREATED).body("게시물이 성공적으로 생성되었습니다.");
   }
