@@ -33,9 +33,20 @@ public class LoginService {
 
   @Transactional
   public UserSignupResponseDto saveUser(UserSignupDto userSignupDto) {
-      if (userRepository.findByEmail(userSignupDto.getUser_email()) != null) {
-          throw new CustomException(ErrorCode.EMAIL_DUPLICATE);
-      }
+    if (userSignupDto.getUser_email() == null || userSignupDto.getUser_name() == null ||
+        userSignupDto.getPw() == null || userSignupDto.getPhone_number() == null ||
+        userSignupDto.getNick_name() == null) {
+      throw new CustomException(ErrorCode.MISSING_REQUIRED_FIELDS);
+    }
+
+    // 해당 이메일로 가입된 정보가 이미 있을 경우
+    if (userRepository.findByEmail(userSignupDto.getUser_email()) != null) {
+      throw new CustomException(ErrorCode.EMAIL_DUPLICATE);
+    }
+    /// 해당 전화번호로 이미 가입된 정보가 이미 있을 경우
+    if (userRepository.findByPhoneNum(userSignupDto.getPhone_number())) {
+      throw new CustomException(ErrorCode.PHONE_NUMBER_DUPLICATE);
+    }
 
     LocalDate localDate = LocalDate.now();
 
@@ -97,7 +108,7 @@ public class LoginService {
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
 
     if (userId == null) {
-      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+      throw new CustomException(ErrorCode.USER_NOT_FOUND);
     }
 
     userRepository.addUserInfo(userId, userAddDataDto.getPhone_number(), userAddDataDto.getImage_url(), userAddDataDto.getNick_name());

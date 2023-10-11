@@ -8,6 +8,8 @@ import com.example.ThreeThirty_BE.dto.login.UserLoginResponseDto;
 import com.example.ThreeThirty_BE.dto.login.UserSignupResponseDto;
 import com.example.ThreeThirty_BE.dto.user.UserUpdateDto;
 import com.example.ThreeThirty_BE.dto.user.UserUpdateResponseDto;
+import com.example.ThreeThirty_BE.exception.CustomException;
+import com.example.ThreeThirty_BE.exception.ErrorCode;
 import com.example.ThreeThirty_BE.mapper.UserRepository;
 import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
@@ -44,14 +46,17 @@ public class UserService {
 
   @Transactional
   public UserUpdateResponseDto updateUser(Long userId, UserUpdateDto userUpdateDto) {
-    userRepository.updateUser(userId, userUpdateDto.getUsername());
-//        String EncodePassword = passwordEncoder.encode(userUpdateDto.getPassword());
-//        userRepository.updateUserPassword(userId, EncodePassword);
+
+    if(userRepository.findByNickName(userUpdateDto.getNick_name())){
+      throw new CustomException(ErrorCode.NICK_NAME_DUPLICATE);
+    }
+
+    userRepository.updateUser(userId, userUpdateDto.getNick_name());
 
     User findTBUSER = this.findById(userId);
     return UserUpdateResponseDto
         .builder()
-        .username(findTBUSER.getUser_name())
+        .nick_name(findTBUSER.getNick_name())
         .build();
   }
 
@@ -70,7 +75,9 @@ public class UserService {
         .builder()
         .user_id(findTBUSER.getUser_id())
         .user_email(findTBUSER.getUser_email())
-        .user_name(findTBUSER.getUser_email())
+        .user_name(findTBUSER.getUser_name())
+        .nick_name(findTBUSER.getNick_name())
+        .signup_date(findTBUSER.getSignup_date())
         .build();
   }
 
