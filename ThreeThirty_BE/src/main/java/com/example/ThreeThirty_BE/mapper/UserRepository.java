@@ -13,7 +13,7 @@ public interface UserRepository {
 
   User findById(Long user_id);
 
-  void updateUser(@Param("user_id") Long user_id, @Param("user_name") String user_name);
+  void updateUser(@Param("user_id") Long user_id, @Param("nick_name") String nick_name);
 
   void updateUserPassword(@Param("user_id") Long user_id, @Param("pw") String pw);
 

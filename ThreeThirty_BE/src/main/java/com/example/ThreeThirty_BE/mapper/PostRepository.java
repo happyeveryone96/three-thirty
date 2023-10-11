@@ -28,7 +28,7 @@ public interface PostRepository {
   //TB_POST_HASHING
   void saveHashing(List<PostHashing> postHashings);
 
-  List<Posts> findByPostId(Long postId);
+  List<Posts> findByPostId(Long post_id, Long user_id);
 
   boolean checkWriter(Long user_id, Long postId);
 

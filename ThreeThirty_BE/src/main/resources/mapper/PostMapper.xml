@@ -100,7 +100,8 @@
 
   <select id="findByPostId" resultMap="postResultMap">
     SELECT p.post_id,
-    p.post_writer,
+    u.nick_name,
+    u.image_url,
     p.post_content,
     p.update_date,
     p.like_count,
@@ -116,9 +117,14 @@
     SELECT GROUP_CONCAT(attach_file_url)
     FROM TB_POST_ATTACH
     WHERE post_id = p.post_id
-    ) AS attach_file_url
+    ) AS attach_file_url,
+    CASE WHEN pl.post_id IS NOT NULL THEN 1 ELSE 0 END AS like_status,
+    CASE WHEN ph.post_id IS NOT NULL THEN 1 ELSE 0 END AS hate_status
     FROM TB_POST p
     LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code
+    LEFT JOIN TB_USER u ON p.post_writer = u.user_id
+    LEFT JOIN TB_POST_LIKE pl ON p.post_id = pl.post_id AND pl.user_id = #{user_id}
+    LEFT JOIN TB_POST_HATE ph ON p.post_id = ph.post_id AND ph.user_id = #{user_id}
     WHERE p.delete_status = 0 and p.post_id = #{post_id}
   </select>
 

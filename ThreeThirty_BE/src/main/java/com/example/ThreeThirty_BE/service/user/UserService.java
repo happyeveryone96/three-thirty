@@ -44,14 +44,12 @@ public class UserService {
 
   @Transactional
   public UserUpdateResponseDto updateUser(Long userId, UserUpdateDto userUpdateDto) {
-    userRepository.updateUser(userId, userUpdateDto.getUsername());
-//        String EncodePassword = passwordEncoder.encode(userUpdateDto.getPassword());
-//        userRepository.updateUserPassword(userId, EncodePassword);
+    userRepository.updateUser(userId, userUpdateDto.getNick_name());
 
     User findTBUSER = this.findById(userId);
     return UserUpdateResponseDto
         .builder()
-        .username(findTBUSER.getUser_name())
+        .nick_name(findTBUSER.getNick_name())
         .build();
   }
 
@@ -70,7 +68,9 @@ public class UserService {
         .builder()
         .user_id(findTBUSER.getUser_id())
         .user_email(findTBUSER.getUser_email())
-        .user_name(findTBUSER.getUser_email())
+        .user_name(findTBUSER.getUser_name())
+        .nick_name(findTBUSER.getNick_name())
+        .signup_date(findTBUSER.getSignup_date())
         .build();
   }
 

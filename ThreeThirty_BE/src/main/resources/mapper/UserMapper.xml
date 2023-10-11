@@ -8,6 +8,8 @@
     <id property="user_id" column="user_id" />
     <result property="user_email" column="user_email" />
     <result property="user_name" column="user_name" />
+    <result property="signup_date" column="signup_date" />
+    <result property="nick_name" column="nick_name" />
     <result property="pw" column="pw" />
     <result property="phone_number" column="phone_number" />
     <result property="providerType" column="provider_type" />
@@ -26,14 +28,14 @@
   </select>
 
   <select id="findById" resultMap="userResultMap" >
-    select user_id, user_email, pw, user_name, provider_type, role_Type
+    select user_id, user_email, pw, user_name, signup_date, nick_name, provider_type, role_Type
     from TB_USER
     where user_id = #{user_id}
   </select>
 
   <update id="updateUser">
     update TB_USER
-    set user_name = #{user_name}
+    set nick_name = #{nick_name}
     where user_id = #{user_id}
   </update>
 

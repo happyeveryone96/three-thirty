@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -141,7 +142,11 @@ public class PostService {
     if (userId == null) {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
-    postRepository.deletePost(postId);
+    //작성자가 맞다면 삭제
+    if(postRepository.checkWriter(userId, postId)){
+      postRepository.deletePost(postId);
+    }
+
   }
 
   // 게시물 데이터 반환
@@ -152,11 +157,12 @@ public class PostService {
     if (userId == null) {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
-    List<Posts> postResponseDto = postRepository.findByPostId(postId);
+    List<Posts> postResponseDto = postRepository.findByPostId(postId, userId);
 
     return postResponseDto;
 
   }
+  @Transactional
   public String clickLike(String authorizationHeader, Long postId) {
     //작성자 확인
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
@@ -168,16 +174,23 @@ public class PostService {
     if(likeRepository.findToLike(userId, postId)){
       // 이미 존재하면 : 좋아요 취소(삭제)
       likeRepository.deleteLike(userId, postId);
+
+//      likeRepository.downLikeCount(postId);
       return "좋아요가 취소되었습니다.";
 
     }else{
       // 존재하지 않으면 : 좋아요 클릭(insert)
       likeRepository.saveLike(userId, postId);
+      // 싫어요 테이블에 똑같은 정보가 있으면 삭제
       likeRepository.deleteHate(userId, postId);
+
+//      likeRepository.upLikeCount(postId);
+//      likeRepository.downHateCount(postId);
       return "좋아요가 등록되었습니다.";
     }
 
   }
+  @Transactional
   public String clickHate(String authorizationHeader, Long postId) {
     //작성자 확인
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
@@ -189,11 +202,16 @@ public class PostService {
     if(likeRepository.findToHate(userId, postId)){
       // 이미 존재하면 : 싫어요 취소(삭제)
       likeRepository.deleteHate(userId, postId);
+
+
       return "싫어요가 취소되었습니다.";
     }else{
       // 존재하지 않으면 : 싫어요 클릭(insert)
       likeRepository.saveHate(userId, postId);
+      // 좋아요 테이블에 똑같은 정보가 있으면 삭제
       likeRepository.deleteLike(userId, postId);
+
+
       return "싫어요가 등록되었습니다.";
     }
 
