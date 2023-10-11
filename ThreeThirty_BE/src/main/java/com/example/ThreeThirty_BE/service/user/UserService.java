@@ -87,7 +87,7 @@ public class UserService {
     Long id = jwtTokenizer.getUserIdFromToken(authorizationHeader);
     User user = userRepository.findById(id);
 
-    String accessToken = jwtTokenizer.createAccessToken(user.getUser_id(), user.getUser_email(), user.getUser_name(),
+    String accessToken = jwtTokenizer.createAccessToken(user.getUser_id(), user.getUser_email(), user.getNick_name(),
         RoleType.USER.getCode());
 
     String token = authorizationHeader.replace("Bearer ", "");
@@ -96,7 +96,7 @@ public class UserService {
         .accessToken(accessToken)
         .refreshToken(token)
         .user_id(user.getUser_id())
-        .user_name(user.getUser_name())
+        .nick_name(user.getNick_name())
         .build();
   }
 }

@@ -22,6 +22,7 @@ public class PostResponseDto {
   public static class Posts {
 
     private Long post_id;
+    private Long user_id;
     private String nick_name;
     private String image_url;
     private String post_content;

@@ -98,7 +98,7 @@ public class LoginService {
         .accessToken(accessToken)
         .refreshToken(refreshToken)
         .user_id(user.getUser_id())
-        .user_name(user.getUser_name())
+        .nick_name(user.getNick_name())
         .build();
   }
 

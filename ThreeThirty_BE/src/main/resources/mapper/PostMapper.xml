@@ -13,6 +13,7 @@
     <result property="hate_count" column="hate_count"/>
     <result property="comment_count" column="comment_count"/>
     <result property="company_title" column="company_title"/>
+    <result property="user_id" column="user_id"/>
     <result property="like_status" column="like_status"/>
     <result property="hate_status" column="hate_status"/>
     <collection property="hashtag_content" ofType="java.lang.String">
@@ -61,6 +62,7 @@
   <select id="findPost" resultMap="postResultMap">
     SELECT
     p.post_id,
+    u.user_id,
     u.nick_name,
     u.image_url,
     p.post_content,

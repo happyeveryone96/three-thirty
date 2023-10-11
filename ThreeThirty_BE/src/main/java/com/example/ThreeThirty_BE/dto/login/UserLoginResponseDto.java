@@ -15,5 +15,5 @@ public class UserLoginResponseDto {
   private String refreshToken;
 
   private Long user_id;
-  private String user_name;
+  private String nick_name;
 }
