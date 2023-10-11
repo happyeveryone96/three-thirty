@@ -7,6 +7,7 @@ import {
   View,
   StyleSheet,
   Dimensions,
+  // Linking,
 } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
@@ -74,13 +75,26 @@ interface RegisterMainScreenProps {
 }
 
 const RegisterMainScreen = ({navigation}: RegisterMainScreenProps) => {
+  // const handleLinkPress = async () => {
+  //   const url = '/oauth2/authorization/kakao';
+  //   const supported = await Linking.canOpenURL(url);
+
+  //   if (supported) {
+  //     await Linking.openURL(url);
+  //   }
+  // };
+
   return (
     <View style={styles.registerContainer}>
       <Text style={styles.slogan}>개미들이 성공하는 그날까지!!</Text>
       <View style={styles.bottomContainer}>
+        {/* <TouchableHighlight onPress={handleLinkPress}>
+          <Text>Kakao Login</Text>
+        </TouchableHighlight> */}
         <TouchableOpacity onPress={() => Alert.alert('구글 로그인')}>
           <View style={styles.socialButton}>
             <Text>Continue with Google</Text>
+
             {/* <Button
               title="Continue with Google"
               onPress={() => Alert.alert('구글 로그인')}

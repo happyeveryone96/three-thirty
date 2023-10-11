@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {Button} from 'react-native';
 // import {GoogleSigninButton} from 'react-native-google-signin';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
@@ -11,11 +11,7 @@ import RegisterProfileInfoScreen from '../screens/RegisterProfileInfoScreen';
 
 const Stack = createStackNavigator();
 
-interface AuthNavigationProps {
-  setUser: Dispatch<SetStateAction<any>>;
-}
-
-const AuthNavigation = ({setUser}: AuthNavigationProps) => {
+const AuthNavigation = ({updateUserInfo}: any) => {
   return (
     <NavigationContainer
       theme={{
@@ -53,7 +49,7 @@ const AuthNavigation = ({setUser}: AuthNavigationProps) => {
         />
         <Stack.Screen
           name="Login"
-          component={() => <LoginScreen setUser={setUser} />}
+          component={() => <LoginScreen updateUserInfo={updateUserInfo} />}
           options={({navigation}) => ({
             headerLeft: () => (
               <Button title="Cancel" onPress={() => navigation.goBack()} />

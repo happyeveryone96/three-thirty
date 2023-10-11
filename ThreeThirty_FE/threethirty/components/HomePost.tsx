@@ -1,6 +1,16 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -11,6 +21,8 @@ const styles = StyleSheet.create({
   },
   contentBox: {
     flexDirection: 'row',
+    width: screenWidth,
+    marginLeft: 50,
   },
   avatarBox: {
     width: 40,
@@ -31,7 +43,6 @@ const styles = StyleSheet.create({
   bottomSubBox: {
     width: 100,
     paddingTop: 30,
-    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -42,19 +53,81 @@ const styles = StyleSheet.create({
 
 interface HomePostProps {
   data: {
-    id: number;
-    userName: string;
-    content: string;
-    commentCount: number;
-    likeCount: number;
-    disLikeCount: number;
+    post_id: number;
+    nick_name: string;
+    image_url: string;
+    post_content: string;
+    update_date: null | string;
+    like_count: number;
+    hate_count: number;
+    comment_count: number;
+    company_title: string;
+    hashtag_content: string[];
+    attach_file_url: string[];
+    like_status: number;
+    hate_status: number;
   };
   handleGoToDetail: () => void;
+  setIsBtnClicked: any;
 }
 
 const HomePost = (props: HomePostProps) => {
-  const {userName, content, commentCount, likeCount, disLikeCount} = props.data;
-  const {handleGoToDetail} = props;
+  const {
+    post_id,
+    nick_name,
+    // image_url,
+    post_content,
+    comment_count,
+    like_count,
+    hate_count,
+    like_status,
+    hate_status,
+  } = props.data;
+
+  const {handleGoToDetail, setIsBtnClicked} = props;
+
+  const toggleLike = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/like/${post_id}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(response => {
+      const status = JSON.stringify(response?.status);
+      setIsBtnClicked(true);
+      setIsBtnClicked(false);
+      // if (status === '401') {
+      //   Alert.alert('토큰 만료');
+      // }
+    });
+  };
+
+  const toggleHate = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/hate/${post_id}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(response => {
+      const status = JSON.stringify(response?.status);
+      setIsBtnClicked(true);
+      setIsBtnClicked(false);
+      // if (status === '401') {
+      //   Alert.alert('토큰 만료');
+      // }
+    });
+  };
+
   return (
     <TouchableOpacity onPress={handleGoToDetail}>
       <View style={styles.container}>
@@ -63,20 +136,32 @@ const HomePost = (props: HomePostProps) => {
             <Icon name="person" size={30} color="gray" />
           </View>
           <View>
-            <Text style={styles.userName}>{userName}</Text>
-            <Text>{content}</Text>
+            <Text style={styles.userName}>{nick_name}</Text>
+            <Text>{post_content}</Text>
             <View style={styles.bottomBox}>
               <View style={styles.bottomSubBox}>
                 <Icon name="comment" size={30} />
-                <Text style={styles.num}>{commentCount}</Text>
+                <Text style={styles.num}>{comment_count}</Text>
               </View>
               <View style={styles.bottomSubBox}>
-                <Icon name="thumb-up" size={30} color="gray" />
-                <Text style={styles.num}>{likeCount}</Text>
+                <TouchableOpacity onPress={() => toggleLike()}>
+                  <Icon
+                    name="thumb-up"
+                    size={30}
+                    color={like_status ? 'red' : 'gray'}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.num}>{like_count}</Text>
               </View>
               <View style={styles.bottomSubBox}>
-                <Icon name="thumb-down" size={30} color="gray" />
-                <Text style={styles.num}>{disLikeCount}</Text>
+                <TouchableOpacity onPress={() => toggleHate()}>
+                  <Icon
+                    name="thumb-down"
+                    size={30}
+                    color={hate_status ? 'red' : 'gray'}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.num}>{hate_count}</Text>
               </View>
             </View>
           </View>

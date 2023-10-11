@@ -1,9 +1,16 @@
-import React, {useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import HomePost from '../components/HomePost';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PostWrite from '../components/PostWrite';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,56 +29,55 @@ const styles = StyleSheet.create({
   },
 });
 
-const homePostData = [
-  {
-    id: 1,
-    userName: '김함바',
-    content: '#삼성전자 3년동안 물타기했는데 9층입니다...',
-    commentCount: 12,
-    likeCount: 23,
-    disLikeCount: 1,
-  },
-  {
-    id: 2,
-    userName: '김함바',
-    content: '#삼성전자 4년동안 물타기했는데 9층입니다...',
-    commentCount: 112,
-    likeCount: 203,
-    disLikeCount: 1,
-  },
-  {
-    id: 3,
-    userName: '김함바',
-    content: '#삼성전자 5년동안 물타기했는데 9층입니다...',
-    commentCount: 112,
-    likeCount: 233,
-    disLikeCount: 1,
-  },
-  {
-    id: 4,
-    userName: '김함바',
-    content: '#삼성전자 6년동안 물타기했는데 9층입니다...',
-    commentCount: 102,
-    likeCount: 333,
-    disLikeCount: 12,
-  },
-  {
-    id: 5,
-    userName: '김함바',
-    content: '#삼성전자 2년동안 물타기했는데 9층입니다...',
-    commentCount: 102,
-    likeCount: 33,
-    disLikeCount: 12,
-  },
-];
+interface PostType {
+  post_id: number;
+  nick_name: string;
+  image_url: string;
+  post_content: string;
+  update_date: null | string;
+  like_count: number;
+  hate_count: number;
+  comment_count: number;
+  company_title: string;
+  hashtag_content: string[];
+  attach_file_url: string[];
+  like_status: number;
+  hate_status: number;
+}
 
 const HomeScreen = () => {
+  const [data, setData] = useState<PostType[]>([]);
   const [isWriteMode, setIsWriteMode] = useState(false);
+  const [isBtnClicked, setIsBtnClicked] = useState(false);
   const navigation = useNavigation();
 
   const handleGoToDetail = () => {
     navigation.navigate('Detail');
   };
+
+  const getPost = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      const accessToken = JSON.parse(userData!)?.accessToken;
+
+      const response = await fetch('http://localhost:8080/post', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const postData = await response.json();
+      setData(postData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getPost();
+  }, [isWriteMode, isBtnClicked]);
 
   const handleFloatingButtonPress = () => {
     setIsWriteMode(true);
@@ -84,11 +90,12 @@ const HomeScreen = () => {
       ) : (
         <View style={styles.container}>
           <ScrollView>
-            {homePostData.map(data => (
+            {data?.map(post => (
               <HomePost
-                key={data.id}
-                data={data}
+                key={post.post_id}
+                data={post}
                 handleGoToDetail={handleGoToDetail}
+                setIsBtnClicked={setIsBtnClicked}
               />
             ))}
           </ScrollView>

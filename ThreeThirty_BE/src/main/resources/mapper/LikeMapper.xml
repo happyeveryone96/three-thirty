@@ -47,7 +47,7 @@
 
   <insert id="saveHate">
     INSERT INTO TB_POST_HATE (user_id, post_id)
-    SELECT #{userId}, post_id
+    SELECT #{user_id}, post_id
     FROM TB_POST
     WHERE post_id = #{post_id}
     AND delete_status = 0;
