@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ThreeThirty_BE.mapper.LikeRepository">
+
+  <select id = "findLikePost">
+    select post_id
+    from TB_POST_LIKE
+    where user_id = #{userId}
+    AND post_id IN (SELECT post_id FROM TB_POST WHERE delete_status = 0)
+  </select>
+  <select id = "findHatePost">
+    select post_id
+    from TB_POST_HATE
+    where user_id = #{userId}
+  </select>
+
+  <select id="findToLike" resultType="boolean">
+    SELECT EXISTS (
+    SELECT 1
+    FROM TB_POST_LIKE
+    WHERE user_id = #{userId} AND post_id = #{postId}
+    ) AS result
+  </select>
+
+  <insert id="saveLike">
+    INSERT INTO TB_POST_LIKE (user_id, post_id)
+    SELECT #{userId}, post_id
+    FROM TB_POST
+    WHERE post_id = #{postId}
+    AND delete_status = 0;
+  </insert>
+
+  <delete id="deleteLike">
+    delete
+    from TB_POST_LIKE
+    where user_id = #{userId} and post_id = #{postId}
+  </delete>
+
+  <select id="findToHate" resultType="boolean">
+    SELECT EXISTS (
+    SELECT 1
+    FROM TB_POST_HATE
+    WHERE user_id = #{userId} AND post_id = #{postId}
+    ) AS result
+  </select>
+
+  <insert id="saveHate">
+    INSERT INTO TB_POST_HATE (user_id, post_id)
+    SELECT #{userId}, post_id
+    FROM TB_POST
+    WHERE post_id = #{postId}
+    AND delete_status = 0;
+  </insert>
+
+  <delete id="deleteHate">
+    delete
+    from TB_POST_HATE
+    where user_id = #{userId} and post_id = #{postId}
+  </delete>
+
+</mapper>

@@ -5,10 +5,12 @@ import com.example.ThreeThirty_BE.domain.PostAttach;
 import com.example.ThreeThirty_BE.domain.PostHashing;
 import com.example.ThreeThirty_BE.dto.PostCreateDto;
 import com.example.ThreeThirty_BE.dto.PostCreateDto.Attachment;
+import com.example.ThreeThirty_BE.dto.PostResponseDto;
 import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
 import com.example.ThreeThirty_BE.dto.PostPatchDto;
 import com.example.ThreeThirty_BE.exception.CustomException;
 import com.example.ThreeThirty_BE.exception.ErrorCode;
+import com.example.ThreeThirty_BE.mapper.LikeRepository;
 import com.example.ThreeThirty_BE.mapper.PostRepository;
 import com.example.ThreeThirty_BE.mapper.UpdatePostRepository;
 import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
@@ -25,6 +27,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final JwtTokenizer jwtTokenizer;
   private final UpdatePostRepository updatePostRepository;
+  private final LikeRepository likeRepository;
 
   // 게시물 작성
   public void createPost(String authorizationHeader, PostCreateDto postCreateDto) {
@@ -86,7 +89,8 @@ public class PostService {
     if (userId == null) {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
-    List<Posts> postResponseDto = postRepository.findPost();
+
+    List<Posts> postResponseDto = postRepository.findPost(userId);
 
     return postResponseDto;
 
@@ -151,6 +155,47 @@ public class PostService {
     List<Posts> postResponseDto = postRepository.findByPostId(postId);
 
     return postResponseDto;
+
+  }
+  public String clickLike(String authorizationHeader, Long postId) {
+    //작성자 확인
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
+
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+
+    if(likeRepository.findToLike(userId, postId)){
+      // 이미 존재하면 : 좋아요 취소(삭제)
+      likeRepository.deleteLike(userId, postId);
+      return "좋아요가 취소되었습니다.";
+
+    }else{
+      // 존재하지 않으면 : 좋아요 클릭(insert)
+      likeRepository.saveLike(userId, postId);
+      likeRepository.deleteHate(userId, postId);
+      return "좋아요가 등록되었습니다.";
+    }
+
+  }
+  public String clickHate(String authorizationHeader, Long postId) {
+    //작성자 확인
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
+
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+
+    if(likeRepository.findToHate(userId, postId)){
+      // 이미 존재하면 : 싫어요 취소(삭제)
+      likeRepository.deleteHate(userId, postId);
+      return "싫어요가 취소되었습니다.";
+    }else{
+      // 존재하지 않으면 : 싫어요 클릭(insert)
+      likeRepository.saveHate(userId, postId);
+      likeRepository.deleteLike(userId, postId);
+      return "싫어요가 등록되었습니다.";
+    }
 
   }
 
