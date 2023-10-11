@@ -2,7 +2,10 @@ package com.example.ThreeThirty_BE.service.login;
 
 
 import com.example.ThreeThirty_BE.domain.RefreshToken;
+import com.example.ThreeThirty_BE.exception.CustomException;
+import com.example.ThreeThirty_BE.exception.ErrorCode;
 import com.example.ThreeThirty_BE.mapper.RefreshTokenRepository;
+import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class RefreshTokenService {
 
   private final RefreshTokenRepository refreshTokenRepository;
+  private final JwtTokenizer jwtTokenizer;
 
   public RefreshToken saveRefreshToken(RefreshToken refreshToken) {
     refreshTokenRepository.saveRefreshToken(refreshToken);
@@ -21,8 +25,10 @@ public class RefreshTokenService {
     return refreshTokenRepository.findRefreshToken(userId);
   }
 
-  public void deleteRefreshToken(String token) {
-    System.out.println(token);
+  public void deleteRefreshToken(String authorizationHeader) {
+
+    String token = authorizationHeader.replace("Bearer ", "");
     refreshTokenRepository.deleteRefreshToken(token);
-  }
+    }
+
 }

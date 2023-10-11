@@ -1,5 +1,34 @@
 spring:
+
   config:
     import: setting.yml
-
-
+  mail:
+    #gmail STMP 서버 호스트
+    host: smtp.gmail.com
+    #SMTP 서버의 포트 번호. Gmail SMTP서버가 587번 포트를 사용할거다 라는 소리
+    port: 587
+    #이메일을 보내는 용도로 사용될 이메일 주소 계정
+    username: ehdgus5289@gmail.com
+    # 앱 번호 비밀번호
+    password: ocgagvixgtkmujjw
+    # 이메일 구성의 추가 속성
+    properties:
+      mail:
+        smtp:
+          #SMTP 서버 인증 필요한 경우 true인정. Gmail SMTP 서버는 인증을 요구하는 녀석이라 true로 설정하는게 필요하다
+          auth: true
+          #SMTP 서버가 TLS를 사용하여 안전한 연결을 요구하는 경우 true로 설정한다. TLS는 데이터를 암호화하여 안전한 전송을 보장하는 프로토콜이다.
+          starttls:
+            enable: true
+            required: true
+            #라이언트가 SMTP 서버와의 연결을 설정하는 데 대기해야 하는 시간(Millisecond). 연결이 불안정한 경우 대기 시간이 길어질 수 있기 때문에 너무 크게 설정하면 전송 속도가 느려질 수 있다.
+          connectiontimeout: 5000
+          #클라이언트가 SMTP 서버로부터 응답을 대기해야 하는 시간(Millisecond). 서버에서 응답이 오지 않는 경우 대기 시간을 제한하기 위해 사용된다.
+          timeout: 5000
+          #클라이언트가 작업을 완료하는데 대기해야 하는 시간(Millisecond). 이메일을 SMTP 서버로 전송하는 데 걸리는 시간을 제한하는데 사용된다.
+          writetimeout: 5000
+          #이메일 인증 코드의 만료 시간(Millisecond)
+        auth-code-expiration-millis: 1800000
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

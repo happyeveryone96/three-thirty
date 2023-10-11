@@ -33,7 +33,7 @@ public class UserController {
     return new ResponseEntity<>(userSignupResponseDto, HttpStatus.OK);
   }
 
-  // 회원 username 수정
+  // 회원 nick_name 수정
   @PutMapping
   public ResponseEntity updateUser(@IfLogin LoginUser loginUser, @RequestBody @Valid UserUpdateDto userUpdateDto, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {

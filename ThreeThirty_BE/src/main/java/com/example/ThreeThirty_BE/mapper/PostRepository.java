@@ -12,7 +12,7 @@ import java.util.List;
 public interface PostRepository {
   // TB_POST
   void savePost(Post post);
-  List<Posts> findPost();
+  List<Posts> findPost(Long user_id);
 
   void deletePost(Long postId);
 
@@ -28,7 +28,9 @@ public interface PostRepository {
   //TB_POST_HASHING
   void saveHashing(List<PostHashing> postHashings);
 
-  List<Posts> findByPostId(Long postId);
+  List<Posts> findByPostId(Long post_id, Long user_id);
 
   boolean checkWriter(Long user_id, Long postId);
+
+
 }

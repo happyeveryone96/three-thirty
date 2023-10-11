@@ -2,6 +2,7 @@ package com.example.ThreeThirty_BE.controller;
 
 import com.example.ThreeThirty_BE.dto.PostCreateDto;
 import com.example.ThreeThirty_BE.dto.PostPatchDto;
+import com.example.ThreeThirty_BE.dto.PostResponseDto;
 import com.example.ThreeThirty_BE.dto.PostResponseDto.Posts;
 import com.example.ThreeThirty_BE.service.PostService;
 import java.util.List;
@@ -19,10 +20,16 @@ public class PostController {
   private final PostService postService;
   // 게시물 작성
   @PostMapping("/create")
+<<<<<<< HEAD
   public ResponseEntity<String> createPost(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PostCreateDto postCreateDto) {
       postService.createPost(authorizationHeader, postCreateDto);
+=======
+  public PostCreateDto createPost(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PostCreateDto postCreateDto) {
+    postService.createPost(authorizationHeader, postCreateDto);
+>>>>>>> main
 
-    return ResponseEntity.status(HttpStatus.CREATED).body("게시물이 성공적으로 생성되었습니다.");
+//    return ResponseEntity.status(HttpStatus.CREATED).body("게시물이 성공적으로 생성되었습니다.");
+      return postCreateDto;
   }
   // 전체 게시물 조회
   @GetMapping
@@ -48,5 +55,19 @@ public class PostController {
   public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long postId) {
     postService.deletePost(authorizationHeader, postId);
     return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다.");
+  }
+
+  //좋아요 클릭 시 로직
+  @GetMapping("/like/{postId}")
+  public ResponseEntity<String> clickLike(@RequestHeader("Authorization") String authorizationHeader,  @PathVariable Long postId){
+    String checkLike = postService.clickLike(authorizationHeader, postId);
+    return ResponseEntity.ok(checkLike);
+  }
+
+  //싫어요 클릭 시 로직
+  @GetMapping("/hate/{postId}")
+  public ResponseEntity<String> clickHate(@RequestHeader("Authorization") String authorizationHeader,  @PathVariable Long postId){
+    String checkHate= postService.clickHate(authorizationHeader, postId);
+    return ResponseEntity.ok(checkHate);
   }
 }

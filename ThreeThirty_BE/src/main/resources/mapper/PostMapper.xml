@@ -5,15 +5,19 @@
 
   <resultMap id="postResultMap" type="com.example.ThreeThirty_BE.dto.PostResponseDto$Posts">
     <id property="post_id" column="post_id"/>
-    <result property="post_writer" column="post_writer"/>
+    <result property="nick_name" column="nick_name"/>
+    <result property="image_url" column="image_url"/>
     <result property="post_content" column="post_content"/>
     <result property="update_date" column="update_date"/>
     <result property="like_count" column="like_count"/>
     <result property="hate_count" column="hate_count"/>
     <result property="comment_count" column="comment_count"/>
     <result property="company_title" column="company_title"/>
-
+    <result property="user_id" column="user_id"/>
+    <result property="like_status" column="like_status"/>
+    <result property="hate_status" column="hate_status"/>
     <collection property="hashtag_content" ofType="java.lang.String">
+
       <result column="hashtag_content"/>
     </collection>
 
@@ -56,8 +60,11 @@
   </insert>
 
   <select id="findPost" resultMap="postResultMap">
-    SELECT p.post_id,
-    p.post_writer,
+    SELECT
+    p.post_id,
+    u.user_id,
+    u.nick_name,
+    u.image_url,
     p.post_content,
     p.update_date,
     p.like_count,
@@ -73,10 +80,18 @@
     SELECT GROUP_CONCAT(attach_file_url)
     FROM TB_POST_ATTACH
     WHERE post_id = p.post_id
-    ) AS attach_file_url
-    FROM TB_POST p
+    ) AS attach_file_url,
+    CASE WHEN pl.post_id IS NOT NULL THEN 1 ELSE 0 END AS like_status,
+    CASE WHEN ph.post_id IS NOT NULL THEN 1 ELSE 0 END AS hate_status
+    FROM
+    TB_POST p
     LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code
-    WHERE p.delete_status = 0
+    LEFT JOIN TB_USER u ON p.post_writer = u.user_id
+    LEFT JOIN TB_POST_LIKE pl ON p.post_id = pl.post_id AND pl.user_id = #{user_id}
+    LEFT JOIN TB_POST_HATE ph ON p.post_id = ph.post_id AND ph.user_id = #{user_id}
+    WHERE
+    p.delete_status = 0;
+
   </select>
 
   <update id="deletePost">
@@ -87,7 +102,8 @@
 
   <select id="findByPostId" resultMap="postResultMap">
     SELECT p.post_id,
-    p.post_writer,
+    u.nick_name,
+    u.image_url,
     p.post_content,
     p.update_date,
     p.like_count,
@@ -103,18 +119,22 @@
     SELECT GROUP_CONCAT(attach_file_url)
     FROM TB_POST_ATTACH
     WHERE post_id = p.post_id
-    ) AS attach_file_url
+    ) AS attach_file_url,
+    CASE WHEN pl.post_id IS NOT NULL THEN 1 ELSE 0 END AS like_status,
+    CASE WHEN ph.post_id IS NOT NULL THEN 1 ELSE 0 END AS hate_status
     FROM TB_POST p
     LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code
+    LEFT JOIN TB_USER u ON p.post_writer = u.user_id
+    LEFT JOIN TB_POST_LIKE pl ON p.post_id = pl.post_id AND pl.user_id = #{user_id}
+    LEFT JOIN TB_POST_HATE ph ON p.post_id = ph.post_id AND ph.user_id = #{user_id}
     WHERE p.delete_status = 0 and p.post_id = #{post_id}
   </select>
 
   <select id = "checkWriter">
-    SELECT COUNT(*) > 0
+    SELECT EXISTS
+    (SELECT 1
     FROM TB_POST
-    WHERE post_writer = #{user_id} and post_id = #{postId}
+    WHERE post_writer = #{user_id} and post_id = #{postId})
   </select>
-
-
 
 </mapper>
