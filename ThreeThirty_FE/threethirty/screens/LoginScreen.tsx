@@ -1,5 +1,7 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  Alert,
   Dimensions,
   Image,
   StyleSheet,
@@ -43,16 +45,56 @@ const styles = StyleSheet.create({
   },
 });
 
-interface LoginScreenProps {
-  setUser: Dispatch<SetStateAction<any>>;
-}
-
-const LoginScreen = ({setUser}: LoginScreenProps) => {
+const LoginScreen = ({updateUserInfo}: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const storeData = () => {
-    setUser('guest');
+  const storeData = async (userData: any) => {
+    try {
+      await AsyncStorage.setItem('userData', userData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const login = () => {
+    if (email === '' || password === '') {
+      Alert.alert('사용자 정보를 입력해주세요.');
+    } else {
+      fetch('http://localhost:8080/users/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_email: email,
+          pw: password,
+        }),
+      })
+        .then(response => {
+          const status = JSON.stringify(response?.status);
+          if (status === '200') {
+            return response.json();
+          } else {
+            return null;
+          }
+        })
+        .then(res => {
+          const userData = JSON.stringify(res);
+          if (email !== '' && password !== '') {
+            if (userData === 'null') {
+              Alert.alert('사용자 정보를 확인해주세요.');
+            } else {
+              Alert.alert('로그인이 완료되었습니다.');
+              storeData(userData);
+              updateUserInfo();
+              setEmail('');
+              setPassword('');
+            }
+          }
+        });
+    }
   };
 
   return (
@@ -77,7 +119,7 @@ const LoginScreen = ({setUser}: LoginScreenProps) => {
         placeholder="Password"
         secureTextEntry={true}
       />
-      <TouchableOpacity onPress={() => storeData()}>
+      <TouchableOpacity onPress={login}>
         <View style={styles.loginButton}>
           <Text>Login</Text>
         </View>

@@ -24,13 +24,13 @@ const styles = StyleSheet.create({
 
 interface HeaderProps {
   setScreen: Dispatch<SetStateAction<any>>;
-  setUser: Dispatch<SetStateAction<any>>;
+  updateUserInfo: any;
 }
 
-const Header = ({setScreen, setUser}: HeaderProps) => {
+const Header = ({setScreen, updateUserInfo}: HeaderProps) => {
   return (
     <View>
-      <TabAvatar setUser={setUser} />
+      <TabAvatar updateUserInfo={updateUserInfo} />
       <View style={styles.header}>
         <View style={styles.box}>
           <TouchableWithoutFeedback onPress={() => setScreen('main')}>

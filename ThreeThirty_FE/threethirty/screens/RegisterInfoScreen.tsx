@@ -40,7 +40,15 @@ const RegisterInfoScreen = ({navigation}: RegisterInfoScreenProps) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const resetBaseInfo = () => {
+    setEmail('');
+    setName('');
+    setPassword('');
+    setPasswordConfirm('');
+  };
+
+  const userBaseInfo = {email, name, password};
 
   return (
     <View>
@@ -71,13 +79,11 @@ const RegisterInfoScreen = ({navigation}: RegisterInfoScreenProps) => {
         placeholder="Password Confirm"
         secureTextEntry={true}
       />
-      <TextInput
-        style={styles.input}
-        onChangeText={setPhoneNumber}
-        value={phoneNumber}
-        placeholder="PhoneNumber"
-      />
-      <TouchableOpacity onPress={() => navigation.navigate('UserProfileInfo')}>
+
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('UserProfileInfo', {userBaseInfo, resetBaseInfo})
+        }>
         <View style={styles.nextButton}>
           <Text>Next</Text>
         </View>

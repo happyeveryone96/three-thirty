@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {NavigationProp} from '@react-navigation/native';
+import React, {useMemo, useState} from 'react';
 import {
   Alert,
   Button,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import RadioGroup, {RadioButtonProps} from 'react-native-radio-buttons-group';
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import AuthAvatar from '../components/AuthAvatar';
 
@@ -26,11 +26,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
   },
+  notification: {
+    margin: 10,
+  },
   complete: {
     width: screenWidth * 0.95,
     margin: 10,
     height: 40,
-    top: 157,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
@@ -40,14 +42,31 @@ const styles = StyleSheet.create({
 });
 
 type ImageSource = {uri: string | undefined} | undefined;
-interface RegisterProfileInfoScreenProps {
-  navigation: NavigationProp<any>;
-}
 
-const RegisterProfileInfoScreen = ({
-  navigation,
-}: RegisterProfileInfoScreenProps) => {
+const RegisterProfileInfoScreen = ({route, navigation}: any) => {
+  const radioButtons: RadioButtonProps[] = useMemo(
+    () => [
+      {
+        id: '1',
+        label: '동의',
+        value: 'option1',
+      },
+      {
+        id: '2',
+        label: '동의하지 않음',
+        value: 'option2',
+      },
+    ],
+    [],
+  );
+
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+
+  const {userBaseInfo, resetBaseInfo} = route.params;
+  const {email, name, password} = userBaseInfo;
+
   const [nickname, setNickname] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const [selectedImage, setSelectedImage] = useState<ImageSource>(undefined);
   const openImagePicker = () => {
@@ -72,6 +91,48 @@ const RegisterProfileInfoScreen = ({
       }
     });
   };
+  const imgUrl = selectedImage?.uri;
+  const norificationStatus = selectedId === '1';
+
+  const resetUserInfo = () => {
+    setNickname('');
+    setSelectedId(undefined);
+    setSelectedImage(undefined);
+    setPhoneNumber('');
+    resetBaseInfo();
+  };
+
+  const register = () => {
+    fetch('http://localhost:8080/users', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_email: email,
+        user_name: name,
+        pw: password,
+        phone_number: phoneNumber,
+        image_url: imgUrl,
+        nick_name: nickname,
+        notification_status: norificationStatus,
+      }),
+    })
+      .then(response => {
+        return response;
+      })
+      .then(res => {
+        const status = JSON.stringify(res?.status);
+        if (status === '201') {
+          Alert.alert('회원가입이 완료되었습니다.');
+          resetUserInfo();
+          navigation.navigate('Login');
+        } else {
+          Alert.alert('회원가입에 실패했습니다.');
+        }
+      });
+  };
 
   return (
     <View>
@@ -85,10 +146,22 @@ const RegisterProfileInfoScreen = ({
         value={nickname}
         placeholder="NickName"
       />
+      <TextInput
+        style={styles.input}
+        onChangeText={setPhoneNumber}
+        value={phoneNumber}
+        placeholder="PhoneNumber"
+      />
+      <Text style={styles.notification}>알림 설정</Text>
+      <RadioGroup
+        layout="row"
+        radioButtons={radioButtons}
+        onPress={setSelectedId}
+        selectedId={selectedId}
+      />
       <TouchableOpacity
         onPress={() => {
-          Alert.alert('회원가입 완료');
-          navigation.navigate('Login');
+          register();
         }}
         style={styles.complete}>
         <View>

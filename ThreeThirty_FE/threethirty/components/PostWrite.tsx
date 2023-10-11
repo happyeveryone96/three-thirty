@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {
   Alert,
@@ -18,9 +19,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
+  companyInput: {
+    width: screenWidth * 0.8,
+    height: screenHeight * 0.1,
+    borderWidth: 1,
+    borderColor: 'black',
+    backgroundColor: 'lightgray',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
   input: {
     width: screenWidth * 0.8,
-    height: screenHeight * 0.6,
+    height: screenHeight * 0.5,
     borderWidth: 1,
     borderColor: 'black',
     backgroundColor: 'lightgray',
@@ -31,10 +42,59 @@ const styles = StyleSheet.create({
 
 const PostWrite = ({setIsWriteMode}: any) => {
   const [text, setText] = useState('');
-  const hashtags = text.match(/#[\wㄱ-ㅎㅏ-ㅣ가-힣]+/g);
+  const [company, setCompany] = useState('');
+  const hashtags = text.match(/#[\wㄱ-ㅎㅏ-ㅣ가-힣]+/g) || [''];
+
+  const writePost = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch('http://localhost:8080/post/create', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        post_type_title: 'general',
+        company_title: company,
+        post_content: text,
+        hashtag_content: hashtags,
+        attach_file: [
+          {
+            attach_file_url: 'http://example.com/file1.pdf',
+            attach_file_type: 'pdf',
+          },
+          {
+            attach_file_url: 'http://example.com/image.jpg',
+            attach_file_type: 'image',
+          },
+        ],
+      }),
+    }).then(response => {
+      const status = JSON.stringify(response?.status);
+      if (status === '401') {
+        Alert.alert('토큰 만료');
+      }
+      if (status === '200') {
+        Alert.alert('게시물 작성이 완료되었습니다.');
+        setIsWriteMode(false);
+      } else {
+        Alert.alert('게시물 작성에 실패했습니다.');
+      }
+    });
+  };
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.companyInput}
+        onChangeText={setCompany}
+        value={company}
+        placeholder="회사명을 작성해주세요"
+        placeholderTextColor={'black'}
+      />
       <TextInput
         multiline={true}
         style={styles.input}
@@ -43,16 +103,7 @@ const PostWrite = ({setIsWriteMode}: any) => {
         placeholder="글을 작성해주세요"
         placeholderTextColor={'black'}
       />
-      <Button
-        title="작성하기"
-        onPress={() => {
-          Alert.alert(
-            `content:${text}` +
-              '\n' +
-              `hashtags:${hashtags ? hashtags.join(', ') : '없음'}`,
-          );
-        }}
-      />
+      <Button title="작성하기" onPress={writePost} />
       <Button
         title="취소하기"
         onPress={() => {

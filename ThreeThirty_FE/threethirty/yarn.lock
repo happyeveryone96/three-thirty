@@ -3565,6 +3565,11 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
+fsevents@^2.3.2:
+  version "2.3.3"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -5724,6 +5729,11 @@ react-native-pager-view@*, react-native-pager-view@^6.2.1, "react-native-pager-v
   version "6.2.1"
   resolved "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-6.2.1.tgz"
   integrity sha512-fZ8chez5J+w831nSnbtK8hwlCiMy1DgpFv8xG6ajXLsAI8uMkGvP554QDIDNlUoCuVwMf7OFyd32Y2Nm2Iaj9Q==
+
+react-native-radio-buttons-group@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/react-native-radio-buttons-group/-/react-native-radio-buttons-group-3.0.5.tgz"
+  integrity sha512-4JQAUJFW2D0txqgktLL1QyXuy6yUWg3r8O2+h1XLUHV9Jby8xnL6IgJsoew3jxXM6uwN+zQcya1wGTRgEB+/KQ==
 
 react-native-reanimated@^3.5.4, "react-native-reanimated@>= 1.0.0":
   version "3.5.4"

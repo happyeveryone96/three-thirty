@@ -14,16 +14,11 @@ import CommunityScreen from '../screens/CommunityScreen';
 import ThreeThirtyScreen from '../screens/ThreeThirtyScreen';
 import FunnyScreen from '../screens/FunnyScreen';
 import FollowingScreen from '../screens/FollowingScreen';
-import {SetStateAction, Dispatch} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import DetailScreen from '../screens/DetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-interface TabNavigationProps {
-  setUser: Dispatch<SetStateAction<any>>;
-}
 
 const NoTabNavigator = () => (
   <Stack.Navigator>
@@ -31,7 +26,7 @@ const NoTabNavigator = () => (
   </Stack.Navigator>
 );
 
-function TabNavigation({setUser}: TabNavigationProps) {
+function TabNavigation({updateUserInfo}: any) {
   const [screen, setScreen] = useState('main');
 
   return (
@@ -60,7 +55,9 @@ function TabNavigation({setUser}: TabNavigationProps) {
               <Icon name="home" color={color} size={size} />
             ),
             headerTitle: () => {
-              return <Header setScreen={setScreen} setUser={setUser} />;
+              return (
+                <Header setScreen={setScreen} updateUserInfo={updateUserInfo} />
+              );
             },
           }}
         />
