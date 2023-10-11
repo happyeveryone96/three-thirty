@@ -36,7 +36,11 @@ public class PostService {
     Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
 
     if (userId == null) {
-      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+      throw new CustomException(ErrorCode.USER_NOT_FOUND);
+    }
+    if(postCreateDto.getPost_content() == null || postCreateDto.getCompany_title() == null ||
+    postCreateDto.getPost_type_title() == null){
+      throw new CustomException(ErrorCode.MISSING_REQUIRED_FIELDS);
     }
     //게시물 유형, 회사 코드 PK 받아오기
     String post_type = postRepository.findPostType(postCreateDto.getPost_type_title());
@@ -53,33 +57,38 @@ public class PostService {
     //POST 객체 DB에 저장하기 위해 호출
     postRepository.savePost(post);
 
-    //attachments라는 PostAttach 객체들을 담을 리스트를 생성
-    //새로운 PostAttach 객체를 생성하고 attachments 리스트에 추가
-    List<PostAttach> attachments = new ArrayList<>();
-    for (Attachment attachment : postCreateDto.getAttach_file()) {
-      PostAttach postAttach = PostAttach.builder()
-          .post_id(post.getPost_id())
-          .attach_file_url(attachment.getAttach_file_url())
-          .attach_file_type_code(attachment.getAttach_file_type())
-          .build();
-      attachments.add(postAttach);
-    }
-    //attachments 리스트 DB에 저장하기 위해 호출
-    postRepository.saveAttachment(attachments);
 
-    //postHashings라는 PostHashing 객체들을 담을 리스트를 생성
-    //새로운 PostHashing 객체를 생성하고 postHashings 리스트에 추가
-    List<PostHashing> postHashings = new ArrayList<>();
-    for (String hashtag_content : postCreateDto.getHashtag_content()) {
-      PostHashing postHashing = PostHashing.builder()
-          .post_id(post.getPost_id())
-          .hashtag_content(hashtag_content)
-          .build();
-      postHashings.add(postHashing);
+      //attachments라는 PostAttach 객체들을 담을 리스트를 생성
+      //새로운 PostAttach 객체를 생성하고 attachments 리스트에 추가
+    if(postCreateDto.getAttach_file() != null){
+      List<PostAttach> attachments = new ArrayList<>();
+
+        for (Attachment attachment : postCreateDto.getAttach_file()) {
+          PostAttach postAttach = PostAttach.builder()
+              .post_id(post.getPost_id())
+              .attach_file_url(attachment.getAttach_file_url())
+              .attach_file_type_code(attachment.getAttach_file_type())
+              .build();
+          attachments.add(postAttach);
+        }
+        //attachments 리스트 DB에 저장하기 위해 호출
+        postRepository.saveAttachment(attachments);
     }
 
-    //postHashings 리스트 DB에 저장하기 위해 호출
-    postRepository.saveHashing(postHashings);
+    if(postCreateDto.getHashtag_content() != null) {
+      //postHashings라는 PostHashing 객체들을 담을 리스트를 생성
+      //새로운 PostHashing 객체를 생성하고 postHashings 리스트에 추가
+      List<PostHashing> postHashings = new ArrayList<>();
+      for (String hashtag_content : postCreateDto.getHashtag_content()) {
+        PostHashing postHashing = PostHashing.builder()
+            .post_id(post.getPost_id())
+            .hashtag_content(hashtag_content)
+            .build();
+        postHashings.add(postHashing);
+      }
+      //postHashings 리스트 DB에 저장하기 위해 호출
+      postRepository.saveHashing(postHashings);
+    }
 
   }
 
@@ -174,18 +183,24 @@ public class PostService {
     if(likeRepository.findToLike(userId, postId)){
       // 이미 존재하면 : 좋아요 취소(삭제)
       likeRepository.deleteLike(userId, postId);
-
-//      likeRepository.downLikeCount(postId);
+      //좋아요 -1
+      likeRepository.downLikeCount(postId);
       return "좋아요가 취소되었습니다.";
 
     }else{
       // 존재하지 않으면 : 좋아요 클릭(insert)
       likeRepository.saveLike(userId, postId);
-      // 싫어요 테이블에 똑같은 정보가 있으면 삭제
-      likeRepository.deleteHate(userId, postId);
+      // 좋아요 +1
+      likeRepository.upLikeCount(postId);
 
-//      likeRepository.upLikeCount(postId);
-//      likeRepository.downHateCount(postId);
+        if(likeRepository.findToHate(userId, postId)){
+          // 싫어요 테이블에 똑같은 정보가 있으면 삭제
+          likeRepository.deleteHate(userId, postId);
+          //싫어요 -1
+          likeRepository.downHateCount(postId);
+        }
+
+
       return "좋아요가 등록되었습니다.";
     }
 
@@ -202,35 +217,28 @@ public class PostService {
     if(likeRepository.findToHate(userId, postId)){
       // 이미 존재하면 : 싫어요 취소(삭제)
       likeRepository.deleteHate(userId, postId);
-
-
+      //싫어요 -1
+      likeRepository.downHateCount(postId);
       return "싫어요가 취소되었습니다.";
+
     }else{
       // 존재하지 않으면 : 싫어요 클릭(insert)
       likeRepository.saveHate(userId, postId);
-      // 좋아요 테이블에 똑같은 정보가 있으면 삭제
-      likeRepository.deleteLike(userId, postId);
+      // 싫어요 +1
+      likeRepository.upHateCount(postId);
+
+      if(likeRepository.findToLike(userId, postId)){
+        // 좋아요 테이블에 똑같은 정보가 있으면 삭제
+        likeRepository.deleteLike(userId, postId);
+        //좋아요 -1
+        likeRepository.downLikeCount(postId);
+      }
 
 
       return "싫어요가 등록되었습니다.";
     }
 
   }
-
-//  public GetPostResponseDto getPost(Long postId) {
-//    List<Post> postList = postRepository.getPost(postId);
-//
-//    List<GetPostResponseDto.GetPost> postPairs = new ArrayList<>();
-//    for (Post post : postList) {
-//       GetPostResponseDto.GetPost getPost = new GetPostResponseDto.GetPost(post.getContent(), post.getCreateDate(), post.getFileUrl(), post.getWriter());
-//      postPairs.add(getPost);
-//    }
-//
-//    return GetPostResponseDto.builder()
-//        .getPosts(postPairs)
-//        .build();
-//  }
-//
 
 
 }

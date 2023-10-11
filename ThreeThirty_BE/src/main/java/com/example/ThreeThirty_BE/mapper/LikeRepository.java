@@ -5,19 +5,23 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface LikeRepository {
-  void saveLike(Long userId, Long postId);
+  void saveLike(Long user_id, Long post_id);
 
-  boolean findToLike(Long userId, Long postId);
+  boolean findToLike(Long user_id, Long post_id);
 
-  void deleteLike(Long userId, Long postId);
+  void deleteLike(Long user_id, Long post_id);
 
-  List<Long> findLikePost(Long userId);
+  boolean findToHate(Long user_id, Long post_id);
 
-  List<Long> findHatePost(Long userId);
+  void deleteHate(Long user_id, Long post_id);
 
-  boolean findToHate(Long userId, Long postId);
+  void saveHate(Long user_id, Long post_id);
 
-  void deleteHate(Long userId, Long postId);
+  void downLikeCount(Long post_id);
 
-  void saveHate(Long userId, Long postId);
+  void upLikeCount(Long post_id);
+
+  void downHateCount(Long post_id);
+
+  void upHateCount(Long post_id);
 }

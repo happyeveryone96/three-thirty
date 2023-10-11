@@ -129,9 +129,10 @@
   </select>
 
   <select id = "checkWriter">
-    SELECT COUNT(*) > 0
+    SELECT EXISTS
+    (SELECT 1
     FROM TB_POST
-    WHERE post_writer = #{user_id} and post_id = #{postId}
+    WHERE post_writer = #{user_id} and post_id = #{postId})
   </select>
 
 </mapper>

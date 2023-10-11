@@ -50,5 +50,16 @@
     set phone_number = #{phone_number}, image_url = #{image_url}, nick_name = #{nick_name}
     where user_id = #{user_id}
   </update>
-
+  <select id = "findByPhoneNum">
+    SELECT EXISTS
+    (SELECT 1
+    FROM TB_USER
+    WHERE phone_number = #{phone_number})
+  </select>
+  <select id = "findByNickName">
+    SELECT EXISTS
+    (SELECT 1
+    FROM TB_USER
+    WHERE nick_name = #{nick_name})
+  </select>
 </mapper>

@@ -6,42 +6,42 @@
   <select id = "findLikePost">
     select post_id
     from TB_POST_LIKE
-    where user_id = #{userId}
+    where user_id = #{user_id}
     AND post_id IN (SELECT post_id FROM TB_POST WHERE delete_status = 0)
   </select>
   <select id = "findHatePost">
     select post_id
     from TB_POST_HATE
-    where user_id = #{userId}
+    where user_id = #{user_id}
   </select>
 
   <select id="findToLike" resultType="boolean">
     SELECT EXISTS (
     SELECT 1
     FROM TB_POST_LIKE
-    WHERE user_id = #{userId} AND post_id = #{postId}
+    WHERE user_id = #{user_id} AND post_id = #{post_id}
     ) AS result
   </select>
 
   <insert id="saveLike">
     INSERT INTO TB_POST_LIKE (user_id, post_id)
-    SELECT #{userId}, post_id
+    SELECT #{user_id}, post_id
     FROM TB_POST
-    WHERE post_id = #{postId}
+    WHERE post_id = #{post_id}
     AND delete_status = 0;
   </insert>
 
   <delete id="deleteLike">
     delete
     from TB_POST_LIKE
-    where user_id = #{userId} and post_id = #{postId}
+    where user_id = #{user_id} and post_id = #{post_id}
   </delete>
 
   <select id="findToHate" resultType="boolean">
     SELECT EXISTS (
     SELECT 1
     FROM TB_POST_HATE
-    WHERE user_id = #{userId} AND post_id = #{postId}
+    WHERE user_id = #{user_id} AND post_id = #{post_id}
     ) AS result
   </select>
 
@@ -49,14 +49,37 @@
     INSERT INTO TB_POST_HATE (user_id, post_id)
     SELECT #{userId}, post_id
     FROM TB_POST
-    WHERE post_id = #{postId}
+    WHERE post_id = #{post_id}
     AND delete_status = 0;
   </insert>
 
   <delete id="deleteHate">
     delete
     from TB_POST_HATE
-    where user_id = #{userId} and post_id = #{postId}
+    where user_id = #{user_id} and post_id = #{post_id}
   </delete>
 
+  <update id = "downLikeCount">
+    UPDATE TB_POST
+    SET like_count = like_count - 1
+    WHERE post_id = #{post_id};
+  </update>
+
+  <update id = "upLikeCount">
+    UPDATE TB_POST
+    SET like_count = like_count + 1
+    WHERE post_id = #{post_id};
+  </update>
+
+  <update id = "downHateCount">
+    UPDATE TB_POST
+    SET hate_count = hate_count - 1
+    WHERE post_id = #{post_id};
+  </update>
+
+  <update id = "upHateCount">
+    UPDATE TB_POST
+    SET hate_count = hate_count + 1
+    WHERE post_id = #{post_id};
+  </update>
 </mapper>

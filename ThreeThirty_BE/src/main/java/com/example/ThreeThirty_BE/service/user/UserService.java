@@ -8,6 +8,8 @@ import com.example.ThreeThirty_BE.dto.login.UserLoginResponseDto;
 import com.example.ThreeThirty_BE.dto.login.UserSignupResponseDto;
 import com.example.ThreeThirty_BE.dto.user.UserUpdateDto;
 import com.example.ThreeThirty_BE.dto.user.UserUpdateResponseDto;
+import com.example.ThreeThirty_BE.exception.CustomException;
+import com.example.ThreeThirty_BE.exception.ErrorCode;
 import com.example.ThreeThirty_BE.mapper.UserRepository;
 import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,11 @@ public class UserService {
 
   @Transactional
   public UserUpdateResponseDto updateUser(Long userId, UserUpdateDto userUpdateDto) {
+
+    if(userRepository.findByNickName(userUpdateDto.getNick_name())){
+      throw new CustomException(ErrorCode.NICK_NAME_DUPLICATE);
+    }
+
     userRepository.updateUser(userId, userUpdateDto.getNick_name());
 
     User findTBUSER = this.findById(userId);
