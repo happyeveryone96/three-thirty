@@ -45,7 +45,7 @@ public class CommentService {
     public List<Comment> findUserComment(String authorizationHeader){
 
         long user_id = checkToken(authorizationHeader);
-        List<Comment> comment = commentRepository.findComments(user_id);
+        List<Comment> comment = commentRepository.findUserComment(user_id);
         return comment;
     }
 

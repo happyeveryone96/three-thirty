@@ -13,8 +13,8 @@ public interface CommentRepository {
     void saveComment(Comment comment);
 
     //show all comments
-    List<Comment> findComments(Long comment_id);
-    Comment findComment(Long comment_id);
+    List<Comment> findComments(Long post_id);
+    List<Comment> findUserComment(Long post_id);
 
     void updateComment(String comment_content, Long comment_id);
     void deleteComment(Long comment_id);
