@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {
   StyleSheet,
@@ -9,6 +9,8 @@ import {
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {updateState} from '../recoil/postState';
+import {useRecoilState} from 'recoil';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -49,11 +51,27 @@ const styles = StyleSheet.create({
   num: {
     marginLeft: 4,
   },
+  deleteEditBox: {
+    position: 'absolute',
+    backgroundColor: 'lightgray',
+    right: 20,
+    top: 20,
+    borderWidth: 1,
+    zIndex: 100,
+  },
+  delete: {
+    borderBottomWidth: 1,
+    padding: 4,
+  },
+  edit: {
+    padding: 4,
+  },
 });
 
 interface HomePostProps {
   data: {
     post_id: number;
+    user_id: number;
     nick_name: string;
     image_url: string;
     post_content: string;
@@ -68,13 +86,17 @@ interface HomePostProps {
     hate_status: number;
   };
   handleGoToDetail: () => void;
-  setIsBtnClicked: any;
+  setIsWriteMode: any;
 }
 
 const HomePost = (props: HomePostProps) => {
+  const [userId, setUserId] = useState('');
+  const [_, setIsUpdated] = useRecoilState(updateState);
+
   const {
     post_id,
     nick_name,
+    user_id,
     // image_url,
     post_content,
     comment_count,
@@ -84,7 +106,7 @@ const HomePost = (props: HomePostProps) => {
     hate_status,
   } = props.data;
 
-  const {handleGoToDetail, setIsBtnClicked} = props;
+  const {handleGoToDetail, setIsWriteMode} = props;
 
   const toggleLike = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -99,14 +121,13 @@ const HomePost = (props: HomePostProps) => {
       },
     }).then(response => {
       // const status = JSON.stringify(response?.status);
-      setIsBtnClicked(true);
-      setIsBtnClicked(false);
+      setIsUpdated(true);
+      setIsUpdated(false);
       // if (status === '401') {
       //   Alert.alert('토큰 만료');
       // }
     });
   };
-
   const toggleHate = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const accessToken = JSON.parse(userData!)?.accessToken;
@@ -120,16 +141,64 @@ const HomePost = (props: HomePostProps) => {
       },
     }).then(response => {
       // const status = JSON.stringify(response?.status);
-      setIsBtnClicked(true);
-      setIsBtnClicked(false);
+      setIsUpdated(true);
+      setIsUpdated(false);
       // if (status === '401') {
       //   Alert.alert('토큰 만료');
       // }
     });
   };
 
+  useEffect(() => {
+    async function fetchData() {
+      const userData = await AsyncStorage.getItem('userData');
+      setUserId(JSON.parse(userData!)?.user_id);
+    }
+    fetchData();
+  }, []);
+
+  const isPostWriter = user_id === Number(userId);
+
+  const deletePost = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/${post_id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(response => {
+      setIsUpdated(true);
+      setIsUpdated(false);
+    });
+  };
+
+  const setPostId = async () => {
+    await AsyncStorage.setItem('post_id', String(post_id));
+  };
+
   return (
-    <TouchableOpacity onPress={handleGoToDetail}>
+    <TouchableOpacity
+      onPress={async () => {
+        await setPostId();
+        handleGoToDetail();
+      }}>
+      {isPostWriter && (
+        <View style={styles.deleteEditBox}>
+          <TouchableOpacity style={styles.delete} onPress={() => deletePost()}>
+            <Text>삭제</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => setIsWriteMode({edit: true, post: props.data})}>
+            <Text>수정</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <View style={styles.container}>
         <View style={styles.contentBox}>
           <View style={styles.avatarBox}>

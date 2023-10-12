@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Button,
@@ -40,10 +40,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const PostWrite = ({setIsWriteMode}: any) => {
+const PostWrite = ({isWriteMode, setIsWriteMode, isThreeThirty}: any) => {
+  const post = isWriteMode.post;
+  const isEditMode = isWriteMode.edit;
   const [text, setText] = useState('');
   const [company, setCompany] = useState('');
   const hashtags = text.match(/#[\wㄱ-ㅎㅏ-ㅣ가-힣]+/g) || [''];
+  const postId = post?.post_id;
+
+  useEffect(() => {
+    if (isEditMode) {
+      setText(post.post_content);
+      setCompany(post.company_title);
+    }
+  }, []);
 
   const writePost = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -57,7 +67,7 @@ const PostWrite = ({setIsWriteMode}: any) => {
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        post_type_title: 'general',
+        post_type_title: isThreeThirty ? 'threeThirty' : 'general',
         company_title: company,
         post_content: text,
         hashtag_content: hashtags,
@@ -86,6 +96,47 @@ const PostWrite = ({setIsWriteMode}: any) => {
     });
   };
 
+  const editPost = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/${postId}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        company_title: company,
+        post_content: text,
+        hashtag_content: hashtags,
+        attach_file: [
+          {
+            attach_file_url: 'http://example.com/file1.pdf',
+            attach_file_type: 'pdf',
+          },
+          {
+            attach_file_url: 'http://example.com/image.jpg',
+            attach_file_type: 'image',
+          },
+        ],
+      }),
+    }).then(response => {
+      const status = JSON.stringify(response?.status);
+
+      if (status === '401') {
+        Alert.alert('토큰 만료');
+      }
+      if (status === '200') {
+        Alert.alert('게시물 수정이 완료되었습니다.');
+        setIsWriteMode(false);
+      } else {
+        Alert.alert('게시물 수정에 실패했습니다.');
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -103,7 +154,10 @@ const PostWrite = ({setIsWriteMode}: any) => {
         placeholder="글을 작성해주세요"
         placeholderTextColor={'black'}
       />
-      <Button title="작성하기" onPress={writePost} />
+      <Button
+        title={isEditMode ? '수정하기' : '작성하기'}
+        onPress={isEditMode ? editPost : writePost}
+      />
       <Button
         title="취소하기"
         onPress={() => {

@@ -44,7 +44,7 @@ const FollowingScreen = () => {
   return (
     <>
       {isWriteMode ? (
-        <PostWrite setIsWriteMode={setIsWriteMode} />
+        <PostWrite isWriteMode={isWriteMode} setIsWriteMode={setIsWriteMode} />
       ) : (
         <View style={styles.container}>
           <ScrollView>
