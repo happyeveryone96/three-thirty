@@ -25,7 +25,7 @@ public class CommentService {
         long user_id = checkToken(authorizationHeader);
 
         Comment comment = Comment.builder()
-                .user_id(commentCreateDto.getUser_id())
+                .user_id(user_id)
                 .post_id(commentCreateDto.getPost_id())
                 .comment_content(commentCreateDto.getComment_content())
                 .build();
@@ -64,7 +64,7 @@ public class CommentService {
 
     public void deleteComment(String authorizationHeader, Long comment_id) {
         Long user_id = checkToken(authorizationHeader);
-        //작성자가 맞다면 삭제
+        //해당 댓글을 작성한 작성자가 맞아? 그럼 delete
         if(commentRepository.checkWriter(user_id, comment_id)){
             commentRepository.deleteComment(comment_id);
         }
