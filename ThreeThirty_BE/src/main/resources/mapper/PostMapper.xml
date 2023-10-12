@@ -99,6 +99,7 @@
   <select id="findBestPost" resultMap="postResultMap">
     SELECT
     p.post_id,
+    u.user_id,
     u.nick_name,
     u.image_url,
     p.post_content,
