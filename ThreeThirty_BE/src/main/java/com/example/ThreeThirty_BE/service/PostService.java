@@ -148,11 +148,12 @@ public class PostService {
       //POST_LOG
       if(company_title != null || post_content != null){
         updatePostRepository.saveLog(postId, localDateTime);
-        if(company_title != null){
-          updatePostRepository.updateCompanyCode(postId, company_title, localDateTime);
-        }else{
-          updatePostRepository.updatePostContent(postId, post_content, localDateTime);
-        }
+      }
+      if(company_title != null){
+        updatePostRepository.updateCompanyCode(postId, company_title, localDateTime);
+      }
+      if(post_content != null){
+        updatePostRepository.updatePostContent(postId, post_content, localDateTime);
       }
 
       //POST_HASHING
