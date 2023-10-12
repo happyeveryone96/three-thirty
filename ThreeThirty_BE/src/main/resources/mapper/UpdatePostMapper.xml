@@ -24,5 +24,47 @@
     where post_id = #{post_id}
   </update>
 
+  <select id="findByHashtagId" parameterType="map" resultType="Long">
+    SELECT hashtag_id
+    FROM TB_POST_HASHTAG
+    WHERE post_id = #{post_id}
+  </select>
 
+  <delete id="deleteHashTag" parameterType="map">
+    DELETE FROM TB_POST_HASHTAG
+    WHERE hashtag_id In
+    <foreach collection="hashtag_id" item="hashtag" open="(" close=")" separator=",">
+      #{hashtag}
+    </foreach>
+  </delete>
+
+  <insert id="insertHashTag" parameterType="map">
+    INSERT INTO TB_POST_HASHTAG (post_id, hashtag_content)
+    VALUES
+    <foreach collection="hashtag_content" item="hashtag" separator=",">
+      (#{post_id}, #{hashtag})
+    </foreach>
+  </insert>
+
+
+  <select id="findByAttachId" parameterType="map" resultType="Long">
+    SELECT attach_file_id
+    FROM TB_POST_ATTACH
+    WHERE post_id = #{post_id}
+  </select>
+
+  <delete id="deleteAttachFile" parameterType="map">
+    DELETE FROM TB_POST_ATTACH
+    WHERE attach_file_id In
+    <foreach collection="attach_file_id" item="attach" open="(" close=")" separator=",">
+      #{attach}
+    </foreach>
+  </delete>
+  <insert id="insertDeleteAttachFile" parameterType="map">
+    INSERT INTO TB_POST_ATTACH (post_id, attach_file_url, attach_file_type_code)
+    VALUES
+    <foreach collection="attach_file" item="attach" separator=",">
+      (#{post_id}, #{attach.attach_file_url}, #{attach.attach_file_type})
+    </foreach>
+  </insert>
 </mapper>

@@ -17,6 +17,7 @@ import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,11 +100,34 @@ public class PostService {
     if (userId == null) {
       throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
     }
-
-    List<Posts> postResponseDto = postRepository.findPost(userId);
+    String post_type_title = "general";
+    String post_type = postRepository.findPostType(post_type_title);
+    List<Posts> postResponseDto = postRepository.findPost(userId, post_type);
 
     return postResponseDto;
+  }
+  public List<Posts> threeThirtyPost(String authorizationHeader) {
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
 
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+    String post_type_title = "threethirty";
+    String post_type = postRepository.findPostType(post_type_title);
+    List<Posts> postResponseDto = postRepository.findPost(userId, post_type);
+
+    return postResponseDto;
+  }
+  public List<Posts> bestPost(String authorizationHeader) {
+    Long userId = jwtTokenizer.getUserIdFromToken(authorizationHeader);
+
+    if (userId == null) {
+      throw new CustomException(ErrorCode.ID_PASSWORD_NOT_MATCH);
+    }
+
+    List<Posts> postResponseDto = postRepository.findBestPost(userId);
+
+    return postResponseDto;
   }
 
   // 게시물 수정
@@ -124,24 +148,33 @@ public class PostService {
       //POST_LOG
       if(company_title != null || post_content != null){
         updatePostRepository.saveLog(postId, localDateTime);
+        if(company_title != null){
+          updatePostRepository.updateCompanyCode(postId, company_title, localDateTime);
+        }else{
+          updatePostRepository.updatePostContent(postId, post_content, localDateTime);
+        }
       }
-      if(company_title != null){
-        updatePostRepository.updateCompanyCode(postId, company_title, localDateTime);
-      }
-      if(post_content != null){
-        updatePostRepository.updatePostContent(postId, post_content, localDateTime);
-      }
+
       //POST_HASHING
-      if(hashtag_content != null){
-        updatePostRepository.updateHashing(postId, hashtag_content);
+      if(hashtag_content != null && !hashtag_content.isEmpty()){
+
+        List<Long> hashtag_id  = updatePostRepository.findByHashtagId(postId, hashtag_content);
+
+        updatePostRepository.deleteHashTag(hashtag_id);
+        updatePostRepository.insertHashTag(postId, hashtag_content);
       }
 
       //POST_ATTACH
+      if(attach_file != null && !attach_file.isEmpty()){
+        List<Long> attach_file_id = updatePostRepository.findByAttachId(postId, attach_file);
+
+        updatePostRepository.deleteAttachFile(attach_file_id);
+        updatePostRepository.insertDeleteAttachFile(postId, attach_file);
+      }
+
     }else{
       // 작성자가 아닌 사용자가 게시물을 수정하는 경우..
     }
-
-
   }
 
   // 게시물 삭제

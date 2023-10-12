@@ -12,7 +12,7 @@ import java.util.List;
 public interface PostRepository {
   // TB_POST
   void savePost(Post post);
-  List<Posts> findPost(Long user_id);
+  List<Posts> findPost(Long user_id, String post_type);
 
   void deletePost(Long postId);
 
@@ -33,4 +33,5 @@ public interface PostRepository {
   boolean checkWriter(Long user_id, Long postId);
 
 
+  List<Posts> findBestPost(Long user_d);
 }
