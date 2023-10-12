@@ -1,16 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import HomePost from '../components/HomePost';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PostWrite from '../components/PostWrite';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {updateState} from '../recoil/postState';
+import {useRecoilState} from 'recoil';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,19 +44,29 @@ interface PostType {
 const HomeScreen = () => {
   const [data, setData] = useState<PostType[]>([]);
   const [isWriteMode, setIsWriteMode] = useState(false);
-  const [isBtnClicked, setIsBtnClicked] = useState(false);
   const navigation = useNavigation();
 
-  const handleGoToDetail = () => {
-    navigation.navigate('Detail');
+  const [isUpdated, _] = useRecoilState(updateState);
+
+  const handleGoToDetail = (post_id: number) => {
+    navigation.navigate('Detail', {post_id});
+  };
+
+  const storeData = async (userData: any) => {
+    try {
+      await AsyncStorage.setItem('userData', userData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getPost = async () => {
     try {
       const userData = await AsyncStorage.getItem('userData');
       const accessToken = JSON.parse(userData!)?.accessToken;
+      const refreshToken = JSON.parse(userData!)?.refreshToken;
 
-      const response = await fetch('http://localhost:8080/post', {
+      const response = await fetch('http://localhost:8080/post/general', {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -69,7 +75,41 @@ const HomeScreen = () => {
         },
       });
       const postData = await response.json();
-      setData(postData);
+      const resCode = JSON.stringify(postData.code);
+      if (resCode === '"EXPIRED_TOKEN"') {
+        if (refreshToken) {
+          const resp = await fetch('http://localhost:8080/users/refreshToken', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+          const status = JSON.stringify(resp.status);
+
+          if (status === '200') {
+            const reponseData = await resp.json();
+            const newUserData = JSON.stringify(reponseData);
+            storeData(newUserData);
+
+            const newAccessToken = reponseData.accessToken;
+
+            const res = await fetch('http://localhost:8080/post/general', {
+              method: 'GET',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            });
+            const newPostData = await res.json();
+            setData(newPostData);
+          }
+        }
+      } else {
+        setData(postData);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -77,7 +117,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     getPost();
-  }, [isWriteMode, isBtnClicked]);
+  }, [isWriteMode, isUpdated]);
 
   const handleFloatingButtonPress = () => {
     setIsWriteMode(true);
@@ -86,7 +126,7 @@ const HomeScreen = () => {
   return (
     <>
       {isWriteMode ? (
-        <PostWrite setIsWriteMode={setIsWriteMode} />
+        <PostWrite isWriteMode={isWriteMode} setIsWriteMode={setIsWriteMode} />
       ) : (
         <View style={styles.container}>
           <ScrollView>
@@ -95,7 +135,7 @@ const HomeScreen = () => {
                 key={post.post_id}
                 data={post}
                 handleGoToDetail={handleGoToDetail}
-                setIsBtnClicked={setIsBtnClicked}
+                setIsWriteMode={setIsWriteMode}
               />
             ))}
           </ScrollView>

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import AuthNavigation from './navigations/AuthNavigation';
 import TabNavigation from './navigations/TabNavigation';
+import {RecoilRoot} from 'recoil';
 
 function App(): JSX.Element {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +25,9 @@ function App(): JSX.Element {
   }, [isLoggedIn]);
 
   return isLoggedIn ? (
-    <TabNavigation updateUserInfo={updateUserInfo} />
+    <RecoilRoot>
+      <TabNavigation updateUserInfo={updateUserInfo} />
+    </RecoilRoot>
   ) : (
     <AuthNavigation updateUserInfo={updateUserInfo} />
   );

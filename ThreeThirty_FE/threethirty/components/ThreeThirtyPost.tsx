@@ -1,39 +1,282 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+// import React from 'react';
+// import {StyleSheet, Text, View} from 'react-native';
+
+// const styles = StyleSheet.create({
+//   container: {
+//     alignItems: 'center',
+//     paddingVertical: 10,
+//     paddingHorizontal: 30,
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//   },
+//   content: {
+//     fontSize: 20,
+//     fontWeight: '800',
+//     flex: 1,
+//   },
+//   time: {
+//     color: 'gray',
+//   },
+// });
+
+// interface ThreeThirtyPostProps {
+//   data: {
+//     id: number;
+//     content: string;
+//     time: string;
+//   };
+// }
+
+// const ThreeThirtyPost = (props: ThreeThirtyPostProps) => {
+//   const {content, time} = props.data;
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.content}>{content}</Text>
+//       <Text style={styles.time}>{time}</Text>
+//     </View>
+//   );
+// };
+
+// export default ThreeThirtyPost;
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
+import {Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {updateState} from '../recoil/postState';
+import {useRecoilState} from 'recoil';
+
+const screenWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+  },
+  contentBox: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: screenWidth,
+    marginLeft: 50,
   },
-  content: {
-    fontSize: 20,
-    fontWeight: '800',
-    flex: 1,
+  avatarBox: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'lightgray',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
   },
-  time: {
-    color: 'gray',
+  userName: {
+    textAlign: 'left',
+  },
+  bottomBox: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  bottomSubBox: {
+    width: 100,
+    paddingTop: 30,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  num: {
+    marginLeft: 4,
+  },
+  deleteEditBox: {
+    position: 'absolute',
+    backgroundColor: 'lightgray',
+    right: 20,
+    top: 20,
+    borderWidth: 1,
+    zIndex: 100,
+  },
+  delete: {
+    borderBottomWidth: 1,
+    padding: 4,
+  },
+  edit: {
+    padding: 4,
   },
 });
 
 interface ThreeThirtyPostProps {
   data: {
-    id: number;
-    content: string;
-    time: string;
+    post_id: number;
+    user_id: number;
+    nick_name: string;
+    image_url: string;
+    post_content: string;
+    update_date: null | string;
+    like_count: number;
+    hate_count: number;
+    comment_count: number;
+    company_title: string;
+    hashtag_content: string[];
+    attach_file_url: string[];
+    like_status: number;
+    hate_status: number;
   };
+  handleGoToDetail: () => void;
+  setIsWriteMode: any;
 }
 
 const ThreeThirtyPost = (props: ThreeThirtyPostProps) => {
-  const {content, time} = props.data;
+  const [userId, setUserId] = useState('');
+  const [_, setIsUpdated] = useRecoilState(updateState);
+
+  const {
+    post_id,
+    nick_name,
+    user_id,
+    // image_url,
+    post_content,
+    comment_count,
+    like_count,
+    hate_count,
+    like_status,
+    hate_status,
+  } = props.data;
+
+  const {handleGoToDetail, setIsWriteMode} = props;
+
+  const toggleLike = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/like/${post_id}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(response => {
+      // const status = JSON.stringify(response?.status);
+      setIsUpdated(true);
+      setIsUpdated(false);
+      // if (status === '401') {
+      //   Alert.alert('토큰 만료');
+      // }
+    });
+  };
+  const toggleHate = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/hate/${post_id}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(response => {
+      // const status = JSON.stringify(response?.status);
+      setIsUpdated(true);
+      setIsUpdated(false);
+      // if (status === '401') {
+      //   Alert.alert('토큰 만료');
+      // }
+    });
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const userData = await AsyncStorage.getItem('userData');
+      setUserId(JSON.parse(userData!)?.user_id);
+    }
+    fetchData();
+  }, []);
+
+  const isPostWriter = user_id === Number(userId);
+
+  const deletePost = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const accessToken = JSON.parse(userData!)?.accessToken;
+
+    fetch(`http://localhost:8080/post/${post_id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then(response => {
+      setIsUpdated(true);
+      setIsUpdated(false);
+    });
+  };
+
+  const setPostId = async () => {
+    await AsyncStorage.setItem('post_id', String(post_id));
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.content}>{content}</Text>
-      <Text style={styles.time}>{time}</Text>
-    </View>
+    <TouchableOpacity
+      onPress={async () => {
+        await setPostId();
+        handleGoToDetail();
+      }}>
+      {isPostWriter && (
+        <View style={styles.deleteEditBox}>
+          <TouchableOpacity style={styles.delete} onPress={() => deletePost()}>
+            <Text>삭제</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => setIsWriteMode({edit: true, post: props.data})}>
+            <Text>수정</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <View style={styles.container}>
+        <View style={styles.contentBox}>
+          <View style={styles.avatarBox}>
+            <Icon name="person" size={30} color="gray" />
+          </View>
+          <View>
+            <Text style={styles.userName}>{nick_name}</Text>
+            <Text>{post_content}</Text>
+            <View style={styles.bottomBox}>
+              <View style={styles.bottomSubBox}>
+                <Icon name="comment" size={30} />
+                <Text style={styles.num}>{comment_count}</Text>
+              </View>
+              <View style={styles.bottomSubBox}>
+                <TouchableOpacity onPress={() => toggleLike()}>
+                  <Icon
+                    name="thumb-up"
+                    size={30}
+                    color={like_status ? 'red' : 'gray'}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.num}>{like_count}</Text>
+              </View>
+              <View style={styles.bottomSubBox}>
+                <TouchableOpacity onPress={() => toggleHate()}>
+                  <Icon
+                    name="thumb-down"
+                    size={30}
+                    color={hate_status ? 'red' : 'gray'}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.num}>{hate_count}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
