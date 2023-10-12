@@ -17,7 +17,6 @@
     <result property="like_status" column="like_status"/>
     <result property="hate_status" column="hate_status"/>
     <collection property="hashtag_content" ofType="java.lang.String">
-
       <result column="hashtag_content"/>
     </collection>
 

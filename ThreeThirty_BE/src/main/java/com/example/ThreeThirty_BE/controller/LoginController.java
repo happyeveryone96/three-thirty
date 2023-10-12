@@ -37,6 +37,8 @@ public class LoginController {
   }
 
   // 로그인
+  //error message 고칠 필요 있음. --> 아이디를 잘 못 입력했는데 아이디 잘못 입력 에러가 아닌 다른 에러가 나와서
+  // 찾기가 힘듬
   @PostMapping("/login")
   public UserLoginResponseDto login(@RequestBody UserLoginDto userLoginDto) {
     return loginService.login(userLoginDto);
