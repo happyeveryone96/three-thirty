@@ -28,18 +28,39 @@ public class PostController {
       return postCreateDto;
   }
   // 전체 게시물 조회
-  @GetMapping
+  @GetMapping("/general")
   public List<Posts> getPost(@RequestHeader("Authorization") String authorizationHeader){
     List<Posts> PostResponseDto = postService.getPost(authorizationHeader);
     return PostResponseDto;
   }
 
+  // 전체 게시물 조회 : 330
+  @GetMapping("/threethirty")
+  public List<Posts> threeThirtyPost(@RequestHeader("Authorization") String authorizationHeader){
+    List<Posts> PostResponseDto = postService.threeThirtyPost(authorizationHeader);
+    return PostResponseDto;
+  }
+  // best 게시물 조회
+  @GetMapping("/best")
+  public List<Posts> bestPost(@RequestHeader("Authorization") String authorizationHeader){
+    List<Posts> PostResponseDto = postService.bestPost(authorizationHeader);
+    return PostResponseDto;
+  }
+
+
+//  // 게시물 수정
+//  @PatchMapping("/{postId}")
+//  public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long postId, @RequestBody PostPatchDto postPatchDto) {
+//    postService.updatePost(authorizationHeader, postId, postPatchDto);
+//    return ResponseEntity.ok("게시물이 성공적으로 수정되었습니다.");
+//  }
   // 게시물 수정
-  @PatchMapping("/{postId}")
+  @PostMapping("/{postId}")
   public ResponseEntity<?> updatePost(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long postId, @RequestBody PostPatchDto postPatchDto) {
     postService.updatePost(authorizationHeader, postId, postPatchDto);
     return ResponseEntity.ok("게시물이 성공적으로 수정되었습니다.");
   }
+
   // 게시물 데이터 반환
   @GetMapping("/{postId}")
   public List<Posts> getPostForEditing(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long postId) {

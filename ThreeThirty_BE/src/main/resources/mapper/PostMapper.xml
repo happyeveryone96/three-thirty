@@ -14,6 +14,7 @@
     <result property="comment_count" column="comment_count"/>
     <result property="company_title" column="company_title"/>
     <result property="user_id" column="user_id"/>
+    <result property="post_type" column="post_type"/>
     <result property="like_status" column="like_status"/>
     <result property="hate_status" column="hate_status"/>
     <collection property="hashtag_content" ofType="java.lang.String">
@@ -89,8 +90,46 @@
     LEFT JOIN TB_POST_LIKE pl ON p.post_id = pl.post_id AND pl.user_id = #{user_id}
     LEFT JOIN TB_POST_HATE ph ON p.post_id = ph.post_id AND ph.user_id = #{user_id}
     WHERE
-    p.delete_status = 0;
+    p.delete_status = 0 and p.post_type = #{post_type}
+    ORDER BY
+    p.post_id DESC
 
+  </select>
+
+  <select id="findBestPost" resultMap="postResultMap">
+    SELECT
+    p.post_id,
+    u.nick_name,
+    u.image_url,
+    p.post_content,
+    p.update_date,
+    p.like_count,
+    p.hate_count,
+    p.comment_count,
+    c.company_title,
+    (
+    SELECT GROUP_CONCAT(hashtag_content)
+    FROM TB_POST_HASHTAG
+    WHERE post_id = p.post_id
+    ) AS hashtag_content,
+    (
+    SELECT GROUP_CONCAT(attach_file_url)
+    FROM TB_POST_ATTACH
+    WHERE post_id = p.post_id
+    ) AS attach_file_url,
+    CASE WHEN pl.post_id IS NOT NULL THEN 1 ELSE 0 END AS like_status,
+    CASE WHEN ph.post_id IS NOT NULL THEN 1 ELSE 0 END AS hate_status
+    FROM
+    TB_POST p
+    LEFT JOIN TB_COMPANY_TYPE c ON p.company_code = c.company_code
+    LEFT JOIN TB_USER u ON p.post_writer = u.user_id
+    LEFT JOIN TB_POST_LIKE pl ON p.post_id = pl.post_id AND pl.user_id = #{user_id}
+    LEFT JOIN TB_POST_HATE ph ON p.post_id = ph.post_id AND ph.user_id = #{user_id}
+    WHERE
+    p.delete_status = 0
+    ORDER BY
+    p.like_count DESC
+    LIMIT 5;
   </select>
 
   <update id="deletePost">
