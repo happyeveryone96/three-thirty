@@ -20,6 +20,7 @@ public class PostController {
   private final PostService postService;
   // 게시물 작성
   @PostMapping("/create")
+
   public PostCreateDto createPost(@RequestHeader("Authorization") String authorizationHeader, @RequestBody PostCreateDto postCreateDto) {
     postService.createPost(authorizationHeader, postCreateDto);
 
