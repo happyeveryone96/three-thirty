@@ -20,7 +20,7 @@
     </resultMap>
 
     <select id = "findComments" resultMap="commentResultMap">
-        select comment_content, user_id, post_id, create_date
+        select comment_id, comment_content, user_id, post_id, create_date
         from TB_POST_COMMENT
         where post_id = #{post_id}
     </select>
@@ -34,9 +34,9 @@
     <!-- useGeneratedKeys: DB에 data를 삽입할 때 자동으로 생성된 키를 사용할 것인가를 결정, true로 지정하면 데이터 삽입 후 생ㅇ성된 키를 가져온다.-->
     <!-- keyProperty: 자동으로 생성된 기본키를 저장할 java객체의 어떤 필드로 지정할 것인가를 알려주는 녀석-->
     <!-- 주로 이 속성들은 자동증가 기본키를 가진 테이블에 사용된다. -->
-    <insert id="saveComment" parameterType="com.example.ThreeThirty_BE.domain.Comment">
-        insert into TB_POST_COMMENT ( post_id, user_id, comment_content )
-        values ( #{post_id}, #{user_id}, #{comment_content})
+    <insert id="saveComment" useGeneratedKeys="true" keyProperty="comment_id">
+        INSERT INTO TB_POST_COMMENT (post_id, user_id, comment_content)
+        values (#{post_id}, #{user_id}, #{comment_content})
     </insert>
 
     <update id="updateComment">

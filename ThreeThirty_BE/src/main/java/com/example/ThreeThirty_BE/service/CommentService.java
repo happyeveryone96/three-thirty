@@ -9,6 +9,7 @@ import com.example.ThreeThirty_BE.mapper.CommentRepository;
 import com.example.ThreeThirty_BE.security.jwt.util.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final JwtTokenizer jwtTokenizer;
+    @Transactional
     public void createComment(String authorizationHeader, CommentCreateDto commentCreateDto){
 
         // 헤더의 토큰으로부터 유저 아이디 가져오기
@@ -29,6 +31,8 @@ public class CommentService {
                 .post_id(commentCreateDto.getPost_id())
                 .comment_content(commentCreateDto.getComment_content())
                 .build();
+
+
 
         commentRepository.saveComment(comment);
     }

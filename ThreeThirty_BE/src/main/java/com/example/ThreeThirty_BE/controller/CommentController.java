@@ -25,9 +25,10 @@ public class CommentController {
     @PostMapping("/post/{postId}/comments/create")
     // responseEntity는 HTTP응답을 생성하는 녀석으로 상태콛, 응답데이터, 헤더, 등을 반환할 수 있고 또, JSON,HTML,텍스트 또는 다른 커스텀 미디어 타입으로 응답을 할 수 있게해준다.
     // 아래의 경우 저장이 잘 일어나면 "댓글이 달려브렀어~"를 리턴하기에 ResponseEntity타입이 String 이다.
-    public ResponseEntity<String> createComment(@RequestHeader("Authorization") String authorizationHeader, @RequestBody CommentCreateDto commentCreateDto){
+    public CommentCreateDto createComment(@RequestHeader("Authorization") String authorizationHeader, @RequestBody CommentCreateDto commentCreateDto){
         commentService.createComment(authorizationHeader, commentCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 달려브렀어~");
+        System.out.println("댓글이 달려브렀어~");
+        return commentCreateDto;
     }
 
     //해당 게시물에 대한 댓글들 보여쥐
