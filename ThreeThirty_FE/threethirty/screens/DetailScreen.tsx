@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {updateState} from '../recoil/postState';
 import {useRecoilState} from 'recoil';
+import Comment from '../components/Comment';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -181,43 +182,46 @@ const DetailScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentBox}>
-        <View style={styles.avatarBox}>
-          <Icon name="person" size={30} color="gray" />
-        </View>
-        <View>
-          <Text style={styles.userName}>{nick_name}</Text>
-          <Text>{post_content}</Text>
-          <View style={styles.bottomBox}>
-            <View style={styles.bottomSubBox}>
-              <Icon name="comment" size={30} />
-              <Text style={styles.num}>{comment_count}</Text>
-            </View>
-            <View style={styles.bottomSubBox}>
-              <TouchableOpacity onPress={() => toggleLike()}>
-                <Icon
-                  name="thumb-up"
-                  size={30}
-                  color={like_status ? 'red' : 'gray'}
-                />
-              </TouchableOpacity>
-              <Text style={styles.num}>{like_count}</Text>
-            </View>
-            <View style={styles.bottomSubBox}>
-              <TouchableOpacity onPress={() => toggleHate()}>
-                <Icon
-                  name="thumb-down"
-                  size={30}
-                  color={hate_status ? 'red' : 'gray'}
-                />
-              </TouchableOpacity>
-              <Text style={styles.num}>{hate_count}</Text>
+    <>
+      <View style={styles.container}>
+        <View style={styles.contentBox}>
+          <View style={styles.avatarBox}>
+            <Icon name="person" size={30} color="gray" />
+          </View>
+          <View>
+            <Text style={styles.userName}>{nick_name}</Text>
+            <Text>{post_content}</Text>
+            <View style={styles.bottomBox}>
+              <View style={styles.bottomSubBox}>
+                <Icon name="comment" size={30} />
+                <Text style={styles.num}>{comment_count}</Text>
+              </View>
+              <View style={styles.bottomSubBox}>
+                <TouchableOpacity onPress={() => toggleLike()}>
+                  <Icon
+                    name="thumb-up"
+                    size={30}
+                    color={like_status ? 'red' : 'gray'}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.num}>{like_count}</Text>
+              </View>
+              <View style={styles.bottomSubBox}>
+                <TouchableOpacity onPress={() => toggleHate()}>
+                  <Icon
+                    name="thumb-down"
+                    size={30}
+                    color={hate_status ? 'red' : 'gray'}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.num}>{hate_count}</Text>
+              </View>
             </View>
           </View>
         </View>
       </View>
-    </View>
+      <Comment navigation={navigation} />
+    </>
   );
 };
 

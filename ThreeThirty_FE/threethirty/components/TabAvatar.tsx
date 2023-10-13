@@ -58,6 +58,7 @@ const TabAvatar = ({updateUserInfo}: any) => {
     }).then(response => {
       const status = JSON.stringify(response?.status);
       if (status === '200') {
+        AsyncStorage.removeItem('userData');
         Alert.alert('로그아웃 되었습니다.');
       } else {
         Alert.alert('로그아웃에 실패했습니다.');
