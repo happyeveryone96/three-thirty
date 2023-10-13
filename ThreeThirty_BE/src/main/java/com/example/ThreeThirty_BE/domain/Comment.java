@@ -1,9 +1,6 @@
 package com.example.ThreeThirty_BE.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigInteger;
 

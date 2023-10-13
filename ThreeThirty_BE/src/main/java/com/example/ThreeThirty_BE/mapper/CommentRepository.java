@@ -14,9 +14,9 @@ public interface CommentRepository {
 
     //show all comments
     List<Comment> findComments(Long post_id);
-    List<Comment> findUserComment(Long post_id);
+    List<Comment> findUserComment(Long user_id);
 
     void updateComment(String comment_content, Long comment_id);
-    void deleteComment(Long comment_id);
+    void deleteComment(Long commentId);
     boolean checkWriter(Long user_id, Long comment_id);
 }

@@ -13,6 +13,6 @@ import java.math.BigInteger;
 @AllArgsConstructor
 public class CommentCreateDto {
     private String comment_content;
-    private long user_id;
-    private long post_id;
+    private Long user_id;
+    private Long post_id;
 }
