@@ -32,8 +32,6 @@ public class CommentService {
                 .comment_content(commentCreateDto.getComment_content())
                 .build();
 
-
-
         commentRepository.saveComment(comment);
     }
 
@@ -41,8 +39,8 @@ public class CommentService {
     public List<Comment> findComments(String authorizationHeader, long post_id){
 
         long user_id = checkToken(authorizationHeader);
-
         List<Comment> comment = commentRepository.findComments(post_id);
+
         return comment;
     }
 

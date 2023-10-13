@@ -22,7 +22,7 @@
     <select id = "findComments" resultMap="commentResultMap">
         select comment_id, comment_content, user_id, post_id, create_date
         from TB_POST_COMMENT
-        where post_id = #{post_id}
+        where post_id = #{post_id} and delete_status = 0
     </select>
 
     <select id = "findUserComment" resultMap="commentResultMap">
