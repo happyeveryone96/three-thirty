@@ -9,6 +9,7 @@
         <result property="user_id" column="user_id" />
         <result property="post_id" column="post_id" />
         <result property="comment_content" column="comment_content" />
+        <result property="delete_status" column="delete_status"/>
         <!--여기서 collection태그는 부모 객체와 자식 객체의 1:N or N:M관계 매핑을 위해서 사용-->
         <collection property="post_id" ofType="long">
             <result column="post_id"/>
