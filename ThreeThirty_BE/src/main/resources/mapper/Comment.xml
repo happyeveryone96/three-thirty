@@ -60,4 +60,16 @@
                     WHERE user_id = #{user_id} and comment_id = #{comment_id})
     </select>
 
+    <update id="upCommentCount">
+        UPDATE TB_POST
+        SET comment_count = comment_count + 1
+        WHERE post_id = #{post_id};
+    </update>
+
+    <update id = "downCommentCount">
+        UPDATE TB_POST
+        SET comment_count = comment_count - 1
+        WHERE post_id = #{post_id};
+    </update>
+
 </mapper>

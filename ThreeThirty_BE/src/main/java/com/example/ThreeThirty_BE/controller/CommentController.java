@@ -53,8 +53,8 @@ public class CommentController {
         return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
     }
     @PostMapping("/post/{post_id}/comments/{comment_id}")
-    public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long comment_id) {
-        commentService.deleteComment(authorizationHeader, comment_id);
+    public ResponseEntity<String> deletePost(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Long comment_id, @PathVariable Long post_id) {
+        commentService.deleteComment(authorizationHeader, comment_id, post_id);
         return ResponseEntity.ok("댓글이 성공적으로 삭제되었습니다.");
     }
 

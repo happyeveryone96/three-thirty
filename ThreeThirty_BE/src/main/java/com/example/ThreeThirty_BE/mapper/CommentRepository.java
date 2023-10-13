@@ -19,4 +19,7 @@ public interface CommentRepository {
     void updateComment(String comment_content, Long comment_id);
     void deleteComment(Long commentId);
     boolean checkWriter(Long user_id, Long comment_id);
+
+    void upCommentCount(Long post_id);
+    void downCommentCount(Long post_id);
 }

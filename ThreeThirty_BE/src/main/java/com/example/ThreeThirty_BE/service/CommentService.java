@@ -21,7 +21,6 @@ public class CommentService {
     private final JwtTokenizer jwtTokenizer;
     @Transactional
     public void createComment(String authorizationHeader, CommentCreateDto commentCreateDto){
-
         // 헤더의 토큰으로부터 유저 아이디 가져오기
 
         long user_id = checkToken(authorizationHeader);
@@ -33,6 +32,8 @@ public class CommentService {
                 .build();
 
         commentRepository.saveComment(comment);
+        commentRepository.upCommentCount(commentCreateDto.getPost_id());
+
     }
 
 
@@ -64,11 +65,14 @@ public class CommentService {
         commentRepository.updateComment(commentDto.getComment_content(), comment_id);
     }
 
-    public void deleteComment(String authorizationHeader, Long comment_id) {
+    public void deleteComment(String authorizationHeader, Long comment_id, Long post_id) {
         Long user_id = checkToken(authorizationHeader);
+
+        System.out.println(user_id);
         //해당 댓글을 작성한 작성자가 맞아? 그럼 delete
         if(commentRepository.checkWriter(user_id, comment_id)){
             commentRepository.deleteComment(comment_id);
+            commentRepository.downCommentCount(post_id);
         }
 
     }
