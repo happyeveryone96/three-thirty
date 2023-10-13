@@ -26,7 +26,7 @@ public class PostResponseDto {
     private String nick_name;
     private String image_url;
     private String post_content;
-    private LocalDateTime update_date;
+    //private LocalDateTime update_date;
     private int like_count;
     private int hate_count;
     private int comment_count;
