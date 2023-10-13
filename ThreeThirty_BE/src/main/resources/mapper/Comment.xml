@@ -41,7 +41,7 @@
     </insert>
 
     <update id="updateComment">
-        update tb_post_comment
+        update TB_POST_COMMENT
         set
             comment_content=#{comment_content}
         where comment_id = #{comment_id}
