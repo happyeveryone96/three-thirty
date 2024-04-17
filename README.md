@@ -9,9 +9,24 @@ Share your thoughts about stocks and get picked as the best comment
 
 # 기능
 - 회원가입, 로그인, 로그아웃, 회원 정보 조회, 회원 정보 수정
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 06 52" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/65b5e919-0c2b-4946-9644-0d46f6550dfe">
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 07 11" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/cc104330-6ebb-43a1-809e-e86c17be32c1">
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 07 36" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/783c532f-0b81-4e9f-a3ff-734be7e399e8">
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 07 56" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/d5b3f0a4-58f6-4a5b-9dfa-32be82af06d0">
+
+<br><br>
+
 - 게시물 작성, 조회, 수정, 삭제
 - 좋아요, 싫어요
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 08 14" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/1f8d0427-8abc-4d7a-b23c-8cbca78a2a32">
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 08 31" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/aabd6e6a-ed14-4ef3-8125-a19db237c450">
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 09 18" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/408e28ce-84d3-44fa-a16a-f81ff0c4151c">
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 09 05" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/fb82b233-8123-4846-ad5f-cd3ab9220a5d">
+
+<br><br>
 - 댓글 작성, 조회, 수정, 삭제
+<img width="300" height="600" alt="스크린샷 2024-04-17 오후 6 09 43" src="https://github.com/happyeveryone96/three-thirty/assets/66675699/e6c419ae-5401-4e94-b38a-d3b2d1fe7e35">
+
 
 <br><br>
 
