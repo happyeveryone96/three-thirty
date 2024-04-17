@@ -1,6 +1,12 @@
 # three-thirty
 Share your thoughts about stocks and get picked as the best comment
 
+## 데모 영상
+
+![GIFMaker_me](https://github.com/happyeveryone96/three-thirty/assets/66675699/6422635a-ee21-4bde-828e-3e659c7564d6)
+
+<br><br>
+
 ## 백엔드 환경설정 메뉴얼
 
 개발 환경 : IntelliJ
