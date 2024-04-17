@@ -13,6 +13,8 @@ Share your thoughts about stocks and get picked as the best comment
 - 좋아요, 싫어요
 - 댓글 작성, 조회, 수정, 삭제
 
+<br><br>
+
 # FE 기술 스택
 - React Native, TypeScript, Recoil.js
 
